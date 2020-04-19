@@ -4,7 +4,7 @@ from flask import request
 from flask import redirect
 from flask.logging import create_logger
 from flasgger import Swagger
-from lib import prediction
+from app.lib import prediction
 import logging
 
 
