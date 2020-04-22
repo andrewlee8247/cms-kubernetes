@@ -1,14 +1,13 @@
 from google.cloud import bigquery
 import logging
-import json
-from app.lib import insert
+from lib import insert
 
 
-def prediction(age, gender, race=None, state=None, alzheimers=None,
-               heart_failure=None, kidney_disease=None, cancer=None,
-               copd=None, depression=None, diabetes=None, heart_disease=None,
-               osteoporosis=None, arthritis=None, stroke=None,
-               dx=None, px=None, hcpcs=None):
+def predict(age, gender, race=None, state=None, alzheimers=None,
+            heart_failure=None, kidney_disease=None, cancer=None,
+            copd=None, depression=None, diabetes=None, heart_disease=None,
+            osteoporosis=None, arthritis=None, stroke=None,
+            dx=None, px=None, hcpcs=None):
 
     # Connect to database
     database = 'healthcare-predictions'
@@ -28,8 +27,8 @@ def prediction(age, gender, race=None, state=None, alzheimers=None,
             ML.PREDICT(MODEL `cms.model_v1`,
                 (
                 SELECT *
-                FROM 
-                    `cms.predictions`
+                FROM
+                    `cms.prediction_requests`
                 WHERE ID = """ '\'' + id + '\'' \
                 """
                 )
@@ -45,12 +44,11 @@ def prediction(age, gender, race=None, state=None, alzheimers=None,
         else:
             raise Exception('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
             print('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
-            logging.error('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
             return
 
         # Get predicted annual cost
         for row in results:
-            prediction = {'prediction': row.predicted_ANNUAL_COST}
+            prediction = {'prediction': round(row.predicted_ANNUAL_COST, 2)}
             logging.info(prediction)
             print(prediction)
         return prediction
