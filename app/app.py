@@ -5,8 +5,8 @@ from flask import redirect
 from flask.logging import create_logger
 from flasgger import Swagger
 from flasgger import swag_from
-from lib import prediction
 import logging
+from lib import prediction
 
 
 app = Flask(__name__)

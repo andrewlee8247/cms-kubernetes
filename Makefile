@@ -5,10 +5,10 @@ install:
 	pip3 install -r requiremnts.txt --user
 
 test:
-	#python -m pytest -vv --cov=test.py
-	#python -m pytest --show-capture=no --nbval notebook.ipynb
+	#python -m pytest -vv --cov=app/lib/ test.py
+	#python -m pytest --show-capture=no --nbval */**.ipynb
 
 lint:
-	pylint --disable=R,C test.py
+	pylint --disable=R,C,W0702,W0703 app/**/**.py
 
 all: install lint test

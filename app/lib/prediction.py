@@ -15,10 +15,11 @@ def predict(age, gender, race=None, state=None, alzheimers=None,
 
     try:
         # Input data to table
-        id = insert.insert_data(age, gender, race, state, alzheimers,
-                                heart_failure, kidney_disease, cancer, copd,
-                                depression, diabetes, heart_disease,
-                                osteoporosis, arthritis, stroke, dx, px, hcpcs)
+        request_id = insert.insert_data(age, gender, race, state, alzheimers,
+                                        heart_failure, kidney_disease, cancer,
+                                        copd, depression, diabetes,
+                                        heart_disease, osteoporosis, arthritis,
+                                        stroke, dx, px, hcpcs)
 
         # Prediction query
         query = """
@@ -29,7 +30,7 @@ def predict(age, gender, race=None, state=None, alzheimers=None,
                 SELECT *
                 FROM
                     `cms.prediction_requests`
-                WHERE ID = """ '\'' + id + '\'' \
+                WHERE ID = """ '\'' + request_id + '\'' \
                 """
                 )
             )"""
@@ -42,9 +43,8 @@ def predict(age, gender, race=None, state=None, alzheimers=None,
             print('Prediction Job ID: ' + job_id + ' is ' + query_job.state)
             logging.info('Prediction Job ID: ' + job_id + ' is ' + query_job.state)
         else:
-            raise Exception('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
             print('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
-            return
+            raise Exception('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
 
         # Get predicted annual cost
         for row in results:
