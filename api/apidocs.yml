@@ -6,15 +6,25 @@ Data used for predictions is based on data collected from the Centers for Medica
 based on chronic medical condition. Since only Medicare and Medicaid data is used, predictions will be lower
 than the annual cost of medical care for patients not receiving Medicare, Medicaid, or are uninsured.  
 
-Inputs for Parameters:
+Parameters and Inputs:
 
-Gender: 1 for Male, 2 for Female
-Race: 1 for White, 2 for Black, 3 for Other, 5 for Hispanic
-State: State abbreviation (case-insensitive)
-Medical Condition: 1 for Yes, 2 for No
-DX: Number of claims based on diagnosis.
-PX: Number of claims based on procedure.
-HCPCS: Number of services outside of primary insurance received.
+gender: 1 for Male, 2 for Female
+race: 1 for White, 2 for Black, 3 for Other, 5 for Hispanic
+state: State abbreviation (case-insensitive)
+alzheimers: 1 for Yes, 2 for No                          
+heart_disease: 1 for Yes, 2 for No                
+kidney_disease: 1 for Yes, 2 for No                 
+cancer: 1 for Yes, 2 for No              
+copd: 1 for Yes, 2 for No
+depression: 1 for Yes, 2 for No
+diabetes: 1 for Yes, 2 for No
+heart_disease: 1 for Yes, 2 for No
+osteoporosis: 1 for Yes, 2 for No
+arthritis: 1 for Yes, 2 for No
+stroke: 1 for Yes, 2 for No
+dx: Number of claims based on diagnosis
+px: Number of claims based on procedure
+hcpcs: Number of services outside of primary insurance received
 
 To get detailed documentation on the data, visit: https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/SynPUFs/DE_Syn_PUF
 
@@ -23,99 +33,70 @@ consumes: application/json
 tags:
     - predictions
 parameters:
-    -   in: query
-        name: age
-        type: integer
-        description: Age
+    -   in: body
+        name: payload
+        schema:
+            type: object
+            properties:
+                age:
+                    type: integer
+                    example: 50
+                    description: Age
+                gender:
+                    type: integer
+                    example: 1
+                race:
+                    type: integer
+                    example: 1
+                state:
+                    type: string
+                    example: 'ca'
+                alzheimers:
+                    type: integer
+                    example: 1
+                heart_failure:
+                    type: integer
+                    example: 2
+                kidney_disease:
+                    type: integer
+                    example: 2
+                cancer:
+                    type: integer
+                    example: 2
+                copd:
+                    type: integer
+                    example: 1
+                depression:
+                    type: integer
+                    example: 1
+                diabetes: 
+                    type: integer
+                    example: 2
+                heart_disease:
+                    type: integer
+                    example: 1
+                osteoporosis:
+                    type: integer
+                    example: 2
+                arthritis:
+                    type: integer
+                    example: 1
+                stroke:
+                    type: integer
+                    example: 2
+                dx:
+                    type: integer
+                    example: 3
+                px:
+                    type: integer
+                    example: 4
+                hcpcs:
+                    type: integer
+                    example: 1   
+        description: JSON payload for prediction 
         required: True
-    -   in: query
-        name: gender
-        type: integer
-        description: Gender (1 for Male, 2 for Female)
-        required: True
-    -   in: query
-        name: race
-        type: integer
-        description: Race (1 for White, 2 for Black, 3 for Other, 5 for Hispanic)
-        required: False
-    -   in: query
-        name: state
-        type: string
-        description: State (abbreviation)
-        required: False
-    -   in: query
-        name: alzheimers
-        type: integer
-        description: Alzheimers (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: heart_failure
-        type: integer
-        description: Heart failure (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: kidney_disease
-        type: integer
-        description: Kidney disease (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: cancer
-        type: integer
-        description: Cancer (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: copd
-        type: integer
-        description: COPD (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: depression
-        type: integer
-        description: Depression (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: diabetes
-        type: integer
-        description: Diabetes (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: heart_disease
-        type: integer
-        description: Heart disease (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: osteoporosis
-        type: integer
-        description: Osteoporosis (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: arthritis
-        type: integer
-        description: Arthritis (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: stroke
-        type: integer
-        description: Stroke (1 for Yes, 2 for No)
-        required: False
-    -   in: query
-        name: dx
-        type: integer
-        description: Number of claims annually based on diagnosis.
-        required: False
-    -   in: query
-        name: px
-        type: integer
-        description: Number of claims annually based on procedure.
-        required: False
-    -   in: query
-        name: hcpcs
-        type: integer
-        description: Number of services outside of primary insurance received.
-        required: False
-
+    
 responses:
     200:
         description: Returns prediction result.
-
  

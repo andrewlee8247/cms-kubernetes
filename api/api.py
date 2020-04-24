@@ -10,6 +10,7 @@ from lib import prediction
 
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 template = {
     "swagger": "2.0",
@@ -38,33 +39,40 @@ def home():
 @app.route('/api/prediction', methods=['POST'])
 @swag_from('apidocs.yml')
 def get_prediction():
-    age = request.args.get('age', type=int)
-    gender = request.args.get('gender', type=int)
-    race = request.args.get('race', type=int)
-    state = request.args.get('state', type=str)
-    alzheimers = request.args.get('alzheimers', type=int)
-    heart_failure = request.args.get('heart_failure', type=int)
-    kidney_disease = request.args.get('kidney_disease', type=int)
-    cancer = request.args.get('cancer', type=int)
-    copd = request.args.get('copd', type=int)
-    depression = request.args.get('depression', type=int)
-    diabetes = request.args.get('diabetes', type=int)
-    heart_disease = request.args.get('heart_disease', type=int)
-    osteoporosis = request.args.get('osteoporosis', type=int)
-    arthritis = request.args.get('arthritis', type=int)
-    stroke = request.args.get('stroke', type=int)
-    dx = request.args.get('dx', type=int)
-    px = request.args.get('px', type=int)
-    hcpcs = request.args.get('hcpcs', type=int)
+    try:
+        req_data = request.get_json()
+        age = req_data['age']
+        gender = req_data['gender']
+        race = req_data['race']
+        state = req_data['state']
+        alzheimers = req_data['alzheimers']
+        heart_failure = req_data['heart_failure']
+        kidney_disease = req_data['kidney_disease']
+        cancer = req_data['cancer']
+        copd = req_data['copd']
+        depression = req_data['depression']
+        diabetes = req_data['diabetes']
+        heart_disease = req_data['heart_disease']
+        osteoporosis = req_data['osteoporosis']
+        arthritis = req_data['arthritis']
+        stroke = req_data['stroke']
+        dx = req_data['dx']
+        px = req_data['px']
+        hcpcs = req_data['hcpcs']
 
-    response = jsonify(prediction.predict(age, gender, race, state,
-                                          alzheimers, heart_failure,
-                                          kidney_disease, cancer, copd,
-                                          depression, diabetes,
-                                          heart_disease, osteoporosis,
-                                          arthritis, stroke, dx, px, hcpcs))
-    LOG.info(response)
-    return response
+        response = jsonify(prediction.predict(age, gender, race, state,
+                                              alzheimers, heart_failure,
+                                              kidney_disease, cancer, copd,
+                                              depression, diabetes,
+                                              heart_disease, osteoporosis,
+                                              arthritis, stroke, dx, px, hcpcs))
+        LOG.info(response)
+        return response
+
+    except Exception as e:
+        LOG.error(e)
+        error = {'error': 'Missing ' + str(e)}
+        return error
 
 
 if __name__ == '__main__':
