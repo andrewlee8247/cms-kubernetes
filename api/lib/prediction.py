@@ -1,6 +1,6 @@
 from google.cloud import bigquery
 import logging
-from lib import insert
+from . import insert
 
 
 def predict(age, gender, race=None, state=None, alzheimers=None,

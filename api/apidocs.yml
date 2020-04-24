@@ -51,7 +51,7 @@ parameters:
     -   in: query
         name: heart_failure
         type: integer
-        description: Heart Failure (1 for Yes, 2 for No)
+        description: Heart failure (1 for Yes, 2 for No)
         required: False
     -   in: query
         name: kidney_disease
@@ -81,7 +81,7 @@ parameters:
     -   in: query
         name: heart_disease
         type: integer
-        description: Heart Disease (1 for Yes, 2 for No)
+        description: Heart disease (1 for Yes, 2 for No)
         required: False
     -   in: query
         name: osteoporosis
