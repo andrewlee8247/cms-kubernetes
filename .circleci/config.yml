@@ -32,11 +32,6 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip3 install -r requirements.txt
-          
-      - run:
-          name: Set Credentials
-          command: 
-            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | export GOOGLE_APPLICATION_CREDENTIALS=GCLOUD_SERVICE_KEY.json
 
       - save_cache:
           paths:
@@ -48,7 +43,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | export GOOGLE_APPLICATION_CREDENTIALS='GCLOUD_SERVICE_KEY.json'
+            export GOOGLE_APPLICATION_CREDENTIALS='./GCLOUD_SERVICE_KEY.json'
             make test
       # run lints!
       - run:
