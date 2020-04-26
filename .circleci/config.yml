@@ -48,6 +48,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
+            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | export GOOGLE_APPLICATION_CREDENTIALS=GCLOUD_SERVICE_KEY.json
             make test
       # run lints!
       - run:
