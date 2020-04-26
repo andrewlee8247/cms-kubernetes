@@ -12,6 +12,7 @@ from lib import prediction
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
+# Setup template for Swagger UI
 template = {
     "swagger": "2.0",
     "info": {
@@ -72,6 +73,7 @@ def get_prediction():
     except Exception as e:
         LOG.error(e)
         error = {'error': 'Missing ' + str(e)}
+        print(error)
         return error
 
 
