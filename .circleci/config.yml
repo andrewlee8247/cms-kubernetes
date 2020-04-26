@@ -28,7 +28,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            apt-get install python3-venv --yes
+            apt-get install python3.7-venv --yes
             python3 -m venv venv
             . venv/bin/activate
             pip3 install -r requirements.txt
@@ -36,7 +36,7 @@ jobs:
       - run:
           name: set credentials
           command: 
-            export GOOGLE_APPLICATION_CREDENTIALS=$GCLOUD_SERVICE_KEY
+            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | export GOOGLE_APPLICATION_CREDENTIALS=GCLOUD_SERVICE_KEY.json
 
       - save_cache:
           paths:
