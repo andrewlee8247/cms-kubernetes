@@ -4,17 +4,13 @@
 #
 version: 2.0
 jobs:
-  build:
+  deploy:
     docker:
       - image: google/cloud-sdk
     
     working_directory: ~/cms-kubernetes
     
     steps:
-      - run: 
-          command:
-            pip3 install pyopenssl
-            
       - run: |
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account $GCLOUD_EMAIL --key-file=-
           gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
