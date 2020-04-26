@@ -12,13 +12,11 @@ jobs:
     
     steps:
       - checkout
-      
+
       - run: |
           echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | gcloud auth activate-service-account --key-file GCLOUD_SERVICE_KEY.json
           gcloud --quiet config set project $GOOGLE_PROJECT_ID
           gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-
-      
 
       # Download and cache dependencies
       #- restore_cache:
@@ -30,6 +28,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
+            apt-get install python3-venv
             python3 -m venv venv
             . venv/bin/activate
             pip3 install -r requirements.txt
