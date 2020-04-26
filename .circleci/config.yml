@@ -26,7 +26,7 @@ jobs:
             #- v1-dependencies-
 
       - run:
-          name: install dependencies
+          name: Install Dependencies
           command: |
             apt-get install python3-venv --yes
             python3 -m venv venv
@@ -34,7 +34,7 @@ jobs:
             pip3 install -r requirements.txt
           
       - run:
-          name: set credentials
+          name: Set Credentials
           command: 
             echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | export GOOGLE_APPLICATION_CREDENTIALS=GCLOUD_SERVICE_KEY.json
 
@@ -48,7 +48,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | export GOOGLE_APPLICATION_CREDENTIALS=GCLOUD_SERVICE_KEY.json
+            echo 'export GOOGLE_APPLICATION_CREDENTIALS=~/cms-kubernetes/GCLOUD_SERVICE_KEY.json' >> $BASH_ENV
             make test
       # run lints!
       - run:
