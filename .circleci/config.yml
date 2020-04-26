@@ -1,6 +1,6 @@
-# Google CLI and Python CircleCI 2.1 configuration file
+# Google SDK and CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-python/ for more details
+# Check https://circleci.com/docs/2.0/google-auth/ for more details
 #
 version: 2.0
 jobs:
@@ -21,9 +21,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "requirements.txt" }}
+            # Fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
 
       - run:
           name: Install Dependencies
@@ -36,18 +36,19 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: v2-dependencies-{{ checksum "requirements.txt" }}
 
-      # run tests!
+      # Run tests
       - run:
-          name: run tests
+          name: Run Tests
           command: |
             . venv/bin/activate
             export GOOGLE_APPLICATION_CREDENTIALS='./GCLOUD_SERVICE_KEY.json'
             make test
-      # run lints!
+
+      # Run lints
       - run:
-          name: run lint
+          name: Run Lint
           command: |
             . venv/bin/activate
             make lint
