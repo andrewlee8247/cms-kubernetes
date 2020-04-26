@@ -13,9 +13,9 @@ jobs:
     steps:
       - run: 
           command:
-            pip3 install pyopenssl
+            pip3 install pyopenssl && \
             EXPORT CLOUDSDK_PYTHON_SITEPACKAGES=1
-            
+
       - run: |
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account $GCLOUD_EMAIL --key-file=-
           gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
