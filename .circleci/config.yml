@@ -2,15 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2.1
-orbs:
-    gcp-cli: circleci/gcp-cli@1.0.0
-workflows:
-    install_and_configure_cli:
-        jobs:
-         - gcp-cli/install_and_initialize_cli:
-            context: myContext
-            executor: gcp-cli/default
+version: 2.0
 jobs:
   build:
     docker:
@@ -41,6 +33,11 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
+          
+      - run:
+          name: set credentials
+          command: 
+            export GOOGLE_APPLICATION_CREDENTIALS=$GCLOUD_SERVICE_KEY
 
       - save_cache:
           paths:
