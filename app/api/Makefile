@@ -8,6 +8,6 @@ test:
 	#python -m pytest -vv --cov=lib *.py
 
 lint:
-	pylint --disable=R,C,W0702,W0703,E1101,E0213,W0104,W0642 */**.py
+	pylint --disable=R,C,W0702,W0703,E1101,E0213,W0104,W0642,W1202 */**.py
 
 all: install lint test
