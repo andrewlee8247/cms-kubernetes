@@ -10,9 +10,7 @@ requests
 google-cloud-storage
 google-cloud-bigquery
 bs4
-xlrd
 flasgger
 google-api-python-client
 locust
 pyarrow
-matplotlib
