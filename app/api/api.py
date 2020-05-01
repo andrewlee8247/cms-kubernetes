@@ -2,12 +2,15 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from flask import redirect
-from flask.logging import create_logger
 from flasgger import Swagger
 from flasgger import swag_from
+import google.cloud.logging
 import logging
 from lib import prediction
 
+# Enable logging to Google
+client = google.cloud.logging.Client()
+client.setup_logging()
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -27,8 +30,6 @@ template = {
 }
 
 Swagger(app, template=template)
-LOG = create_logger(app)
-LOG.setLevel(logging.INFO)
 
 
 @app.route('/')
@@ -61,22 +62,24 @@ def get_prediction():
         px = req_data['px']
         hcpcs = req_data['hcpcs']
 
-        response = jsonify(prediction.predict(age, gender, race, state,
-                                              alzheimers, heart_failure,
-                                              kidney_disease, cancer, copd,
-                                              depression, diabetes,
-                                              heart_disease, osteoporosis,
-                                              arthritis, stroke, dx, px, hcpcs))
-        LOG.info(response)
-        return response
+        response = prediction.predict(age, gender, race, state,
+                                      alzheimers, heart_failure,
+                                      kidney_disease, cancer, copd,
+                                      depression, diabetes,
+                                      heart_disease, osteoporosis,
+                                      arthritis, stroke, dx, px, hcpcs)
+        if list(response.keys())[0] == 'error':
+            logging.error(response)
+        else:
+            logging.info({'JSON payload': req_data, 'prediction': response['prediction']})
+        return jsonify(response)
 
     except Exception as e:
-        LOG.error(e)
-        error = {'error': 'Missing ' + str(e)}
-        print(error)
+        logging.error({'error': 'Missing {}'.format(e)})
+        error = {'error': 'Missing {}'.format(e)}
         return error
 
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='0.0.0.0', port=8080)
+    serve(app, host='0.0.0.0', port=80)

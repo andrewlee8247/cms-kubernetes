@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: healthcare-api
+spec:
+  selector:
+    app: healthcare-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer

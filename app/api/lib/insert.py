@@ -73,10 +73,8 @@ def insert_data(age, gender, race=None, state=None, alzheimers=None,
     query_job.result()
     job_id = query_job.job_id
     if query_job.state == 'DONE':
-        print('Insert Job ID: ' + job_id + ' is ' + query_job.state)
-        logging.info('Insert Job ID: ' + job_id + ' is ' + query_job.state)
+        logging.info('Insert Job ID: {0}  is {1}'.format(job_id, query_job.state))
     else:
-        print('Insert Job ID: ' + job_id + ' error ' + query_job.errors)
-        raise Exception('Insert Job ID: ' + job_id + ' error ' + query_job.errors)
+        raise Exception('Insert Job ID: {0} error {1}'.format(job_id, query_job.errors))
 
     return request_id

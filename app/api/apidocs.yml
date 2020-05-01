@@ -1,10 +1,9 @@
 Make Predictions on Annual Healthcare Cost Based on Medical Condition.
 Documentation:
 
-Data used for predictions is based on data collected from the Centers for Medicare and Medicaid Services from
-2008 to 2010. Through this API, predictions can be made to estimate the annual cost for patients
-based on chronic medical condition. Since only Medicare and Medicaid data is used, predictions will be lower
-than the annual cost of medical care for patients not receiving Medicare, Medicaid, or are uninsured.  
+Data used for predictions is based on data collected from the Centers for Medicare and Medicaid Services from 2008 to 2010. Through this API, predictions can be made to estimate the annual responsibility 
+cost for patients based on chronic medical condition. Since only Medicare and Medicaid data is used, predictions will be lower than the annual cost of medical care for patients not receiving Medicare, 
+Medicaid, or are uninsured.
 
 Parameters and Inputs:
 

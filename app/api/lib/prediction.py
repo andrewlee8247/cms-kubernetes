@@ -40,21 +40,15 @@ def predict(age, gender, race=None, state=None, alzheimers=None,
         results = query_job.result()
         job_id = query_job.job_id
         if query_job.state == 'DONE':
-            print('Prediction Job ID: ' + job_id + ' is ' + query_job.state)
-            logging.info('Prediction Job ID: ' + job_id + ' is ' + query_job.state)
+            logging.info('Prediction Job ID: {0} is {1}'.format(job_id, query_job.state))
         else:
-            print('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
-            raise Exception('Prediction Job ID: ' + job_id + ' error ' + query_job.errors)
+            raise Exception('Prediction Job ID: {0} error {1}'.format(job_id, query_job.errors))
 
         # Get predicted annual cost
         for row in results:
             prediction = {'prediction': round(row.predicted_ANNUAL_COST, 2)}
-            logging.info(prediction)
-            print(prediction)
         return prediction
 
     except Exception as e:
-        logging.error(e)
         error = {'error': str(e)}
-        print(error)
         return error

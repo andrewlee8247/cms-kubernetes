@@ -1,0 +1,10 @@
+pytest
+pylint
+pytest-cov
+flask
+requests
+google-cloud-storage
+google-cloud-bigquery
+google-cloud-logging
+flasgger
+waitress
