@@ -4,11 +4,10 @@ import logging
 from . import convert
 
 
-def insert_data(age, gender, race=None, state=None, alzheimers=None,
-                heart_failure=None, kidney_disease=None, cancer=None,
-                copd=None, depression=None, diabetes=None, heart_disease=None,
-                osteoporosis=None, arthritis=None, stroke=None, dx=None,
-                px=None, hcpcs=None):
+def insert_data(age, gender, race, state, alzheimers, heart_failure,
+                kidney_disease, cancer, copd, depression, diabetes,
+                heart_disease, osteoporosis, arthritis, stroke, dx,
+                px, hcpcs):
 
     # Connect to database
     database = 'healthcare-predictions'

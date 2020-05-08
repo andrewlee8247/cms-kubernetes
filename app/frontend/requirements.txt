@@ -1,0 +1,7 @@
+dash
+requests
+pytest
+pylint
+pytest-cov
+flask
+waitress

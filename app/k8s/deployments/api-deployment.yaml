@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-api
+spec:
+  selector:
+    matchLabels:
+      app: healthcare-api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: healthcare-api
+        release: stable
+    spec:
+      containers:
+      - name: healthcare-predictions-api
+        image: gcr.io/healthcare-predictions/healthcare-predictions-api:v.1.0
+        imagePullPolicy: Always
+        env:
+          - name: "PORT"
+            value: "8080"
+        resources:
+          requests: # minimum resources required
+            cpu: 100m
+            memory: 64Mi
+          limits: # maximum resources allocated
+            cpu: 200m
+            memory: 128Mi

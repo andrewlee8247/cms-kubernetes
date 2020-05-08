@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-frontend
+spec:
+  selector:
+    matchLabels:
+      app: healthcare-frontend
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: healthcare-frontend
+        release: stable
+        tier: frontend
+    spec:
+      containers:
+      - name: healthcare-predictions-frontend
+        image: gcr.io/healthcare-predictions/healthcare-predictions-app:v.1.0
+        imagePullPolicy: Always
+        env:
+          - name: "PORT"
+            value: "80"
+        resources:
+          requests: # minimum resources required
+            cpu: 250m
+            memory: 64Mi
+          limits: # maximum resources allocated
+            cpu: 500m
+            memory: 512Mi

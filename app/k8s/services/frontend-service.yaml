@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: healthcare-api
+  name: frontend-service
 spec:
+  type: NodePort
   selector:
-    app: healthcare-api
+    app: healthcare-frontend
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
-  type: LoadBalancer

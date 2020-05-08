@@ -2,7 +2,7 @@ class converter:
     def __init__(self, param):
         self.param = param
 
-    def state(state=None):
+    def state(state):
         # Convert state abbreviations to codes
         state_dict = {'AL': 1, 'AK': 2, 'AZ': 3, 'AR': 4, 'CA': 5, 'CO': 6, 'CT': 7,
                       'DE': 8, 'DC': 9, 'FL': 10, 'GA': 11, 'HI': 12, 'ID': 13, 'IL': 14,
@@ -27,19 +27,19 @@ class converter:
             race
         return race
 
-    def condition(self, condition=None):
+    def condition(self, condition):
         # Convert condition if none otherwise raise exception
-        if condition is None:
+        if condition in ("", 0):
             condition = 2
-        elif condition not in (None, 1, 2):
+        elif condition not in ("", 1, 2):
             raise Exception('{} must be 1 or 2'.format(self.capitalize()))
         else:
             condition
         return condition
 
-    def claims(self, claims=None):
+    def claims(self, claims):
         # Convert claims if none otherwise raise exception
-        if claims is None:
+        if claims == "":
             claims = 0
         elif type(claims) is not int:
             raise Exception('Number of {} must be a number'.format(self.upper()))

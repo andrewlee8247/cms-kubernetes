@@ -1,19 +1,27 @@
 from flask import Flask
 from flask import jsonify
 from flask import request
-from flask import redirect
 from flasgger import Swagger
 from flasgger import swag_from
-import google.cloud.logging
 import logging
 from lib import prediction
 
-# Enable logging to Google
-client = google.cloud.logging.Client()
-client.setup_logging()
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
+app.config['SWAGGER'] = {
+        "specs": [
+            {
+                "endpoint": "apispec_1",
+                "route": "/api/apispec_1.json",
+                "rule_filter": lambda rule: True,  # all in
+                "model_filter": lambda tag: True,  # all in
+            }
+        ],
+        "static_url_path": "/api/flasgger_static",
+        "swagger_ui": True,
+        "specs_route": "/api/"
+    }
 
 # Setup template for Swagger UI
 template = {
@@ -30,12 +38,6 @@ template = {
 }
 
 Swagger(app, template=template)
-
-
-@app.route('/')
-def home():
-    """/ Route will redirect to API Docs: /apidocs"""
-    return redirect('/apidocs')
 
 
 @app.route('/api/prediction', methods=['POST'])
@@ -82,4 +84,4 @@ def get_prediction():
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='0.0.0.0', port=80)
+    serve(app, host='0.0.0.0', port='8080')
