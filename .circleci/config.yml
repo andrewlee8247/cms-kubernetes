@@ -26,3 +26,7 @@ jobs:
       - gcr/push-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
+workflows:
+  version: 2
+  test_build_deploy:
+      - Build-Push-Image-Docker-API
