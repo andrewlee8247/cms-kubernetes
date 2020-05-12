@@ -161,6 +161,7 @@ workflows:
           filters:
             branches:
               only:
+                - master
                 - development
       - Build-Push-Image-Docker-API:
           requires:
@@ -184,9 +185,9 @@ workflows:
               only:
                 - development
       - load-test:
-          #requires:
-            #- test
+          requires:
+            - test
           filters:
             branches:
               only:
-                - master
+                - development
