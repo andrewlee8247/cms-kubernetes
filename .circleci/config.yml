@@ -64,21 +64,17 @@ jobs:
     steps:
       - checkout
       - gcr/gcr-auth
-      - run:
-          name: API Directory
-          command: |
-            cd ~/cms-kubernetes/app/api
       - gcr/build-image:
+          name: Build API Image
+          path: ~/cms-kubernetes/app/api
           image: healthcare-predictions-api
           tag: "v.1.1"
       - gcr/push-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
-      - run:
-          name: Front-end Directory
-          command: |
-            cd ~/cms-kubernetes/app/frontend
       - gcr/build-image:
+          name: Build Front-end Image
+          path: ~/cms-kubernetes/app/frontend
           image: healthcare-predictions-app
           tag: "v.1.1"
       - gcr/push-image:
