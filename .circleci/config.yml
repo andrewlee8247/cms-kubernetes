@@ -60,7 +60,8 @@ jobs:
   Build-Push-Image-Docker-API:
     description: Build and push API image to GCR
     machine: true
-    working_directory: ~/cms-kubernetes/app/api
+    working_directory: ~/cms-kubernetes
+    path: ~/cms-kubernetes/app/api
     steps:
       - checkout
       - gcr/gcr-auth
@@ -73,7 +74,8 @@ jobs:
   Build-Push-Image-Docker-Frontend:
     description: Build and push front-end image to GCR
     machine: true
-    working_directory: ~/cms-kubernetes/app/frontend
+    working_directory: ~/cms-kubernetes
+    path: ~/cms-kubernetes/app/frontend
     steps:
       - checkout
       - gcr/gcr-auth
@@ -93,4 +95,4 @@ workflows:
             - test
       - Build-Push-Image-Docker-Frontend:
           requires:
-            - Build-Push-Image-Docker-API    
+            - test
