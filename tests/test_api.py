@@ -2,13 +2,14 @@ import sys
 sys.path.append('./')
 from app.api.api import app
 
-print('=====================API test session starts======================')
+
+print('\n ============================ API test session start ============================')
 try:
     with app.test_client() as c:
         response = c.get('/api/')
         assert response.status_code == 200
     print('Response Successful')
-    print('========================API test passed===========================')
+    print('\n =============================== API test passed ================================')
 except Exception as e:
     print('Response Error {}'.format(str(e)))
-    print('========================API test failed===========================')
+    print('\n =============================== API test failed ================================')
