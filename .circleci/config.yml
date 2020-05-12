@@ -60,13 +60,10 @@ jobs:
   Build-Push-Image-Docker:
     description: Build and push image to GCR
     machine: true
-    working_directory: ~/cms-kubernetes/app
+    working_directory: ~/cms-kubernetes/app/api
     steps:
       - checkout
       - gcr/gcr-auth
-      - run:
-          name: API Directory
-          working_directory: api
       - gcr/build-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
@@ -75,7 +72,8 @@ jobs:
           tag: "v.1.1"
       - run:
           name: Front-end Directory
-          working_directory: frontend
+          command: |
+            cd ~/cms-kubernetes/app/frontend/
       - gcr/build-image:
           image: healthcare-predictions-app
           tag: "v.1.1"
