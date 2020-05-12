@@ -47,3 +47,11 @@ jobs:
           image: healthcare-predictions-app
           namespace: healthcare-app
           tag: v.1.1 # Change version number when updating
+workflows:
+  version: 2
+  dev_test_build_deploy:
+    jobs:
+      - build:
+      - deploy:
+          requires:
+            - build
