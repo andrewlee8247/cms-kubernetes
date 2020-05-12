@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, task
+from locust import HttpLocust, TaskSet, task, between
 import json
 
 
@@ -7,7 +7,7 @@ class UserBehavior(TaskSet):
     @task(1)
     def create_post(self):
         headers = {'content-type': 'application/json'}
-        self.client.post("/posts", data=json.dumps({
+        self.client.post('/api/prediction', data=json.dumps({
             "age": 65,
             "gender": 1,
             "race": 3,
@@ -32,3 +32,4 @@ class UserBehavior(TaskSet):
 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior
+    wait_time = between(5.0, 9.0)

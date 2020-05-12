@@ -1,4 +1,4 @@
-# CircleCI 2.1, Google SDK, and Orbs for CI/CD
+# CircleCI 2.1, Google SDK, and Orbs for CI/CD configuration file
 #
 # Check https://circleci.com/orbs/registry/?query=gcp for more details
 #
@@ -55,6 +55,7 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+
   # Build and Push Docker Images to GCR
   Build-Push-Image-Docker-API:
     description: Build and push API image to GCR
@@ -87,7 +88,9 @@ jobs:
           tag: "v.1.1" # Change version number when updating 
       - gcr/push-image:
           image: healthcare-predictions-app
-          tag: "v.1.1" # Change version number when updating 
+          tag: "v.1.1" # Change version number when updating
+
+  # Deploy containers to GKE
   deploy:
     description: Deploy API and front-end to GKE
     machine: true
@@ -121,6 +124,19 @@ jobs:
           image: gcr.io/healthcare-predictions/healthcare-predictions-app
           namespace: healthcare-app
           tag: v.1.1 # Change version number when updating
+
+  # Load test deployment
+  load-test:
+    description: Run load test.
+    machine: true
+    working_directory: ~cms-kubernetes
+    steps:
+      - checkout:
+      - run:
+        name: Run Load Test
+        command: |
+          locust --host=http://34.102.187.98 --locustfile locustfile.py --no-web -c 20 -r 1 -t 1m  --print-stats
+
 workflows:
   version: 2
   test_build_deploy:
@@ -148,6 +164,13 @@ workflows:
       - deploy:
           requires:
             - Build-Push-Image-Docker-API
+          filters:
+            branches:
+              only:
+                - development
+      - load-test:
+          requires:
+            - deploy
           filters:
             branches:
               only:
