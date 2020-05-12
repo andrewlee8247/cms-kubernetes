@@ -184,8 +184,8 @@ workflows:
               only:
                 - development
       - load-test:
-          requires:
-            - test
+          #requires:
+            #- test
           filters:
             branches:
               only:
