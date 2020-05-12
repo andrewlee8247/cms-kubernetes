@@ -63,13 +63,12 @@ jobs:
     working_directory: ~/cms-kubernetes
     steps:
       - checkout
-      - run:
-          name: API Directory
-          command: |
-            cd ~/cms-kubernetes/app/api
       - gcr/gcr-auth
-      - gcr/build-image:
+      - build-image:
+          google-project-id: $GOOGLE_PROJECT_ID
           image: healthcare-predictions-api
+          path: ~/cms-kubernetes/app/api
+          registry_url: gcr.io
           tag: "v.1.1"
       - gcr/push-image:
           image: healthcare-predictions-api
