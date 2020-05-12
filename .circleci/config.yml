@@ -151,7 +151,7 @@ jobs:
           name: Run Load Test
           command: |
             . venv/bin/activate
-            locust --host=http://34.102.187.98 --locustfile locustfile.py --no-web -c 20 -r 1 -t 1m  --print-stats
+            locust --host=http://34.102.187.98 --locustfile locustfile.py --no-web -c 10 -r 1 -t 1m  --print-stats
 
 workflows:
   version: 2
@@ -161,7 +161,6 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - development
       - Build-Push-Image-Docker-API:
           requires:
