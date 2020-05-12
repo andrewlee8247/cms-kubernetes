@@ -5,6 +5,7 @@ from flask import Flask
 from flask import redirect, render_template
 from dash.dependencies import Input, Output, State
 import requests
+import logging
 
 
 server = Flask(__name__)
@@ -149,6 +150,7 @@ def api_reroute():
 
 
 @server.route('/404')
+@server.errorhandler(404)
 def page_not_found():
     return render_template('page_not_found.html'), 404
 
@@ -286,6 +288,7 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
                 return dict_response['error']
 
         except Exception as e:
+            logging.error(e)
             return str(e)
 
 

@@ -4,7 +4,11 @@ from flask import request
 from flasgger import Swagger
 from flasgger import swag_from
 import logging
-from lib import prediction
+
+if __name__ == '__main__':
+    from lib import prediction
+else:
+    from .lib import prediction
 
 
 app = Flask(__name__)

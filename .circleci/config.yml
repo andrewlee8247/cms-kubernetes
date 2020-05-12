@@ -46,6 +46,8 @@ jobs:
             . venv/bin/activate
             export GOOGLE_APPLICATION_CREDENTIALS='./GCLOUD_SERVICE_KEY.json'
             make test
+            python3 /tests/test_api.py
+            python3 /tests/test_frontend.py
 
       # Run lints
       - run:
@@ -97,31 +99,56 @@ jobs:
           google-compute-zone: GOOGLE_COMPUTE_ZONE
           google-project-id: GOOGLE_PROJECT_ID
           perform-login: true
+      - run:
+          name: Update API Deployment
+          command: |
+            echo 'Updating API Deployment'
       - gcp-gke/rollout-image:
           cluster: healthcare-predictions-dev
           container: healthcare-predictions-api
           deployment: healthcare-api
-          image: healthcare-predictions-api
+          image: gcr.io/healthcare-predictions/healthcare-predictions-api
           namespace: healthcare-app
           tag: v.1.1 # Change version number when updating 
+      - run:
+          name: Update Front-end Deployment
+          command: |
+            echo 'Updating Front-end Deployment'
       - gcp-gke/rollout-image:
           cluster: healthcare-predictions-dev
           container: healthcare-predictions-frontend
           deployment: healthcare-frontend
-          image: healthcare-predictions-app
+          image: gcr.io/healthcare-predictions/healthcare-predictions-app
           namespace: healthcare-app
           tag: v.1.1 # Change version number when updating
 workflows:
   version: 2
   dev_test_build_deploy:
     jobs:
-      - test
+      - test:
+          filters:
+            branches:
+              only:
+                - master
+                - development
       - Build-Push-Image-Docker-API:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                - development
       - Build-Push-Image-Docker-Frontend:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                - development
       - deploy:
           requires:
-            - Build-Push-Image-Docker-Frontend
+            - Build-Push-Image-Docker-API
+          filters:
+            branches:
+              only:
+                - development

@@ -1,10 +1,10 @@
 import sys
 sys.path.append('./')
-from app.api.api import app
+from app.frontend.app import server
 
 try:
-    with app.test_client() as c:
-        response = c.get('/api/')
+    with server.test_client() as c:
+        response = c.get('/')
         assert response.status_code == 200
     print('Response Successful')
 except Exception as e:
