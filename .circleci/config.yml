@@ -9,6 +9,20 @@ orbs:
   gcr: circleci/gcp-gcr@0.7.1
 jobs:
   build:
+    description: Build and push front-end image to GCR
+    machine: true
+    working_directory: ~/cms-kubernetes
+    steps:
+      - checkout
+      - gcr/gcr-auth
+      - gcr/build-image:
+          image: healthcare-predictions-app
+          path: ~/cms-kubernetes/app/frontend
+          tag: "v.1.1" # Change version number when updating 
+      - gcr/push-image:
+          image: healthcare-predictions-app
+          tag: "v.1.1" # Change version number when updating 
+  deploy:
     description: Deploy API and front-end to GKE
     machine: true
     steps:
