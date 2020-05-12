@@ -133,9 +133,9 @@ jobs:
     steps:
       - checkout:
       - run:
-        name: Run Load Test
-        command: |
-          locust --host=http://34.102.187.98 --locustfile locustfile.py --no-web -c 20 -r 1 -t 1m  --print-stats
+          name: Run Load Test
+          command: |
+            locust --host=http://34.102.187.98 --locustfile locustfile.py --no-web -c 20 -r 1 -t 1m  --print-stats
 
 workflows:
   version: 2
