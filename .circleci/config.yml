@@ -129,7 +129,7 @@ jobs:
   load-test:
     description: Run load test.
     machine: true
-    working_directory: ~cms-kubernetes
+    working_directory: ~/cms-kubernetes
     steps:
       - checkout
       - run:
