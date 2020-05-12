@@ -57,24 +57,27 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
-  Build-Push-Image-Docker:
-    description: Build and push image to GCR
+  Build-Push-Image-Docker-API:
+    description: Build and push API image to GCR
     machine: true
-    working_directory: ~/cms-kubernetes
+    working_directory: ~/cms-kubernetes/app/api
     steps:
       - checkout
       - gcr/gcr-auth
       - gcr/build-image:
-          name: Build API Image
-          path: ~/cms-kubernetes/app/api
           image: healthcare-predictions-api
           tag: "v.1.1"
       - gcr/push-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
+  Build-Push-Image-Docker-Frontend:
+    description: Build and push front-end image to GCR
+    machine: true
+    working_directory: ~/cms-kubernetes/app/frontend
+    steps:
+      - checkout
+      - gcr/gcr-auth
       - gcr/build-image:
-          name: Build Front-end Image
-          path: ~/cms-kubernetes/app/frontend
           image: healthcare-predictions-app
           tag: "v.1.1"
       - gcr/push-image:
@@ -85,6 +88,9 @@ workflows:
   test_build_deploy:
     jobs:
       - test
-      - Build-Push-Image-Docker:
+      - Build-Push-Image-Docker-API:
           requires:
-            - test    
+            - test
+      - Build-Push-Image-Docker-Frontend:
+          requires:
+            - Build-Push-Image-Docker-API    
