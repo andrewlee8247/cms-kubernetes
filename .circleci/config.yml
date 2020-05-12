@@ -20,7 +20,6 @@ jobs:
             echo $GCLOUD_SERVICE_KEY > ./GCLOUD_SERVICE_KEY.json | gcloud auth activate-service-account --key-file GCLOUD_SERVICE_KEY.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -38,7 +37,6 @@ jobs:
           paths:
             - ./venv
           key: v3-dependencies-{{ checksum "requirements.txt" }}
-
       # Run tests
       - run:
           name: Run Tests
@@ -48,7 +46,6 @@ jobs:
             make test
             python3 tests/test_api.py
             python3 tests/test_frontend.py
-
       # Run lints
       - run:
           name: Run Lint
@@ -133,25 +130,22 @@ jobs:
     working_directory: ~/cms-kubernetes
     steps:
       - checkout
-
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "requirements.txt" }}
+            - v4-dependencies-{{ checksum "requirements.txt" }}
             # Fallback to using the latest cache if no exact match is found
-            - v3-dependencies-
+            - v4-dependencies-
       - run:
           name: Install Dependencies
           command: |
-            apt-get install python3-venv --yes
             python3 -m venv venv
             . venv/bin/activate
             pip3 install locust
       - save_cache:
           paths:
             - ./venv
-          key: v3-dependencies-{{ checksum "requirements.txt" }}
-
+          key: v4-dependencies-{{ checksum "requirements.txt" }}
       # Run load test
       - run:
           name: Run Load Test
