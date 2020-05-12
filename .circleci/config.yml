@@ -6,7 +6,7 @@ version: 2.1
 orbs:
   node: circleci/node@1.0.1
   gcp-gke: circleci/gcp-gke@1.0.4
-  gcr: circleci/gcp-gcr@0.0.2
+  gcr: circleci/gcp-gcr@0.7.1
 jobs:
   test:
     docker:
@@ -64,11 +64,9 @@ jobs:
     steps:
       - checkout
       - gcr/gcr-auth
-      - build-image:
-          google-project-id: $GOOGLE_PROJECT_ID
+      - gcr/build-image:
           image: healthcare-predictions-api
           path: ~/cms-kubernetes/app/api
-          registry_url: gcr.io
           tag: "v.1.1"
       - gcr/push-image:
           image: healthcare-predictions-api
