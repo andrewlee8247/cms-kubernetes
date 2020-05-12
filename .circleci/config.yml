@@ -94,7 +94,7 @@ jobs:
       - gcp-gke/update-kubeconfig-with-credentials:
           cluster: healthcare-predictions-dev
           gcloud-service-key: GCLOUD_SERVICE_KEY
-          gcloud-compute-zone: GOOGLE_COMPUTE_ZONE
+          google-compute-zone: GOOGLE_COMPUTE_ZONE
           google-project-id: GOOGLE_PROJECT_ID
       - gcp-gke/rollout-image:
           cluster: healthcare-predictions-dev
