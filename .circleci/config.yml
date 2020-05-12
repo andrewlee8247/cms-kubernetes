@@ -2,9 +2,9 @@
 #
 # Check https://circleci.com/docs/2.0/google-auth/ for more details
 #
-version: 2.0
+version: 2.1
 jobs:
-  build:
+  build and test:
     docker:
       - image: google/cloud-sdk
     
@@ -54,3 +54,11 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+    Build-Push-Image-Docker:
+        description: Build and push image to Google Container Registry
+        machine: true
+        steps:
+            - checkout
+            - gcr/gcr-auth
+            - gcr/build-image:
+                image
