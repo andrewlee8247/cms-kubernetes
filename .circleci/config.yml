@@ -66,8 +66,7 @@ jobs:
       - gcr/gcr-auth
       - run:
           name: API Directory
-          command: |
-            cd ~/cms-kubernetes/app/api
+          working_directory: api
       - gcr/build-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
@@ -76,8 +75,7 @@ jobs:
           tag: "v.1.1"
       - run:
           name: Front-end Directory
-          command: |
-            cd ~/cms-kubernetes/app/frontend
+          working_directory: frontend
       - gcr/build-image:
           image: healthcare-predictions-app
           tag: "v.1.1"
