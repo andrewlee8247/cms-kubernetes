@@ -4,63 +4,63 @@
 #
 version: 2.0
 jobs:
-    build:
-        docker:
-        - image: google/cloud-sdk
+  build:
+    docker:
+      - image: google/cloud-sdk
     
-        working_directory: ~/cms-kubernetes
+    working_directory: ~/cms-kubernetes
     
-        steps:
-        - checkout
-        - run:
-            name: Authorize Google SDK
-            command: |
-                echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | gcloud auth activate-service-account --key-file GCLOUD_SERVICE_KEY.json
-                gcloud --quiet config set project $GOOGLE_PROJECT_ID
-                gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
+    steps:
+      - checkout
+      - run:
+          name: Authorize Google SDK
+          command: |
+            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | gcloud auth activate-service-account --key-file GCLOUD_SERVICE_KEY.json
+            gcloud --quiet config set project $GOOGLE_PROJECT_ID
+            gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
-        # Download and cache dependencies
-        - restore_cache:
-            keys:
-                - v3-dependencies-{{ checksum "requirements.txt" }}
-                # Fallback to using the latest cache if no exact match is found
-                - v3-dependencies-
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v3-dependencies-{{ checksum "requirements.txt" }}
+            # Fallback to using the latest cache if no exact match is found
+            - v3-dependencies-
 
-        - run:
-            name: Install Dependencies
-            command: |
-                apt-get install python3-venv --yes
-                python3 -m venv venv
-                . venv/bin/activate
-                pip3 install -r requirements.txt
+      - run:
+          name: Install Dependencies
+          command: |
+            apt-get install python3-venv --yes
+            python3 -m venv venv
+            . venv/bin/activate
+            pip3 install -r requirements.txt
 
-        - save_cache:
-            paths:
-                - ./venv
-            key: v3-dependencies-{{ checksum "requirements.txt" }}
+      - save_cache:
+          paths:
+            - ./venv
+          key: v3-dependencies-{{ checksum "requirements.txt" }}
 
-    test:
-        docker:
-        - image: google/cloud-sdk
-        steps:
-        - checkout
-        # Run tests
-        - run:
-            name: Run Tests
-            command: |
-                . venv/bin/activate
-                export GOOGLE_APPLICATION_CREDENTIALS='./GCLOUD_SERVICE_KEY.json'
-                make test
+      # Run tests
+  test:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - run:
+          name: Run Tests
+          command: |
+            . venv/bin/activate
+            export GOOGLE_APPLICATION_CREDENTIALS='./GCLOUD_SERVICE_KEY.json'
+            make test
 
-        # Run lints
-        - run:
-            name: Run Lint
-            command: |
-                . venv/bin/activate
-                make lint
+      # Run lints
+      - run:
+          name: Run Lint
+          command: |
+            . venv/bin/activate
+            make lint
 workflows:
-    version: 2
-    build_and_test:
-        jobs:
-            - build
-            - test    
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test    
