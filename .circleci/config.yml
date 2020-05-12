@@ -8,7 +8,7 @@ orbs:
   gcp-gke: circleci/gcp-gke@1.0.4
   gcr: circleci/gcp-gcr@0.7.1
 jobs:
-  Build-Push-Image-Docker-API:
+  build:
     description: Build and push API image to GCR
     machine: true
     working_directory: ~/cms-kubernetes
@@ -26,7 +26,3 @@ jobs:
       - gcr/push-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
-workflows:
-  version: 2
-  test_build_deploy:
-      - Build-Push-Image-Docker-API
