@@ -64,8 +64,8 @@ jobs:
     steps:
       - checkout
       - gcr/gcr-auth
+      - path: ~/cms-kubernetes/app/api
       - gcr/build-image:
-          path: ~/cms-kubernetes/app/api
           image: healthcare-predictions-api
           tag: "v.1.1"
       - gcr/push-image:
