@@ -91,6 +91,8 @@ jobs:
     machine: true
     steps:
       - gcp-gke/install
+      - gcp-gke/update-kubeconfig-with-credentials:
+          cluster: healthcare-predictions-dev
       - gcp-gke/rollout-image:
           cluster: healthcare-predictions-dev
           container: healthcare-predictions-api
@@ -118,4 +120,4 @@ workflows:
             - test
       - deploy:
           requires:
-            - Build-Push-Image-Docker-Frontend
+            - Build-Push-Image-Docker-API
