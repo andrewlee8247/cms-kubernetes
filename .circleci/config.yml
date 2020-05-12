@@ -100,7 +100,7 @@ jobs:
       - gcp-gke/rollout-image:
           cluster: healthcare-predictions-dev
           container: healthcare-predictions-api
-          deployment: heatlhcare-api
+          deployment: healthcare-api
           image: healthcare-predictions-api
           namespace: healthcare-app
           tag: v.1.1 # Change version number when updating 
