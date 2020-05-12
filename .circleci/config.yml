@@ -186,7 +186,7 @@ workflows:
                 - development
       - load-test:
           requires:
-            - test
+            - deploy
           filters:
             branches:
               only:
