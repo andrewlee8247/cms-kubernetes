@@ -65,8 +65,9 @@ jobs:
       - checkout
       - gcr/gcr-auth
       - run:
+          name: API Directory
           command: |
-            cd api
+            cd /api
       - gcr/build-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
@@ -74,8 +75,10 @@ jobs:
           image: healthcare-predictions-api
           tag: "v.1.1"
       - run:
+          name: Front-end Directory
           command: |
-            cd app/frontend
+            cd ..
+            cd /frontend
       - gcr/build-image:
           image: healthcare-predictions-app
           tag: "v.1.1"
