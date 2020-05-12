@@ -62,9 +62,12 @@ jobs:
     machine: true
     working_directory: ~/cms-kubernetes
     steps:
+      - run:
+          name: API Directory
+          command: |
+            cd ~/cms-kubernetes/app/api
       - checkout
       - gcr/gcr-auth
-      - path: ~/cms-kubernetes/app/api
       - gcr/build-image:
           image: healthcare-predictions-api
           tag: "v.1.1"
