@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Copy Service Key to API Directory
           command: |
-            echo $GCLOUD_SERVICE_KEY > .app/api/healthcare-predictions-85c2b5783a5e.json
+            echo $GCLOUD_SERVICE_KEY > ~/cms-kubernetes/app/api/healthcare-predictions-85c2b5783a5e.json
       - gcr/gcr-auth
       - gcr/build-image:
           image: healthcare-predictions-api
