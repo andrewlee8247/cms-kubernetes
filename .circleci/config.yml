@@ -91,7 +91,6 @@ jobs:
     machine: true
     steps:
       - gcp-gke/install
-      - gcp-gke/init
       - gcp-gke/rollout-image:
           cluster: healthcare-predictions-dev
           container: healthcare-predictions-api
