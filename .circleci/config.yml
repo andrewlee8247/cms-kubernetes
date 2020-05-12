@@ -2,9 +2,13 @@
 #
 # Check https://circleci.com/docs/2.0/google-auth/ for more details
 #
-version: 2.0
+version: 2.1
+orbs:
+  node: circleci/node@1.0.1
+  gcp-gke: circleci/gcp-gke@1.0.4
+  gcr: circleci/gcp-gcr@0.0.2
 jobs:
-  build:
+  test:
     docker:
       - image: google/cloud-sdk
     
@@ -15,7 +19,7 @@ jobs:
       - run:
           name: Authorize Google SDK
           command: |
-            echo $GCLOUD_KEY > ./GCLOUD_SERVICE_KEY.json | gcloud auth activate-service-account --key-file GCLOUD_SERVICE_KEY.json
+            echo $GCLOUD_SERVICE_KEY > ./GCLOUD_SERVICE_KEY.json | gcloud auth activate-service-account --key-file GCLOUD_SERVICE_KEY.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
@@ -40,11 +44,6 @@ jobs:
           key: v3-dependencies-{{ checksum "requirements.txt" }}
 
       # Run tests
-  test:
-    docker:
-      - image: google/cloud-sdk
-    steps:
-      - checkout
       - run:
           name: Run Tests
           command: |
@@ -58,11 +57,36 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+  Build-Push-Image-Docker:
+    description: Build and push image to GCR
+    machine: true
+    working_directory: ~/cms-kubernetes/app
+    steps:
+      - checkout
+      - gcr/gcr-auth
+      - run:
+          command: |
+            cd api
+      - gcr/build-image:
+          image: healthcare-predictions-api
+          tag: "v.1.1"
+      - gcr/push-image:
+          image: healthcare-predictions-api
+          tag: "v.1.1"
+      - run:
+          command: |
+            cd app/frontend
+      - gcr/build-image:
+          image: healthcare-predictions-app
+          tag: "v.1.1"
+      - gcr/push-image:
+          image: healthcare-predictions-app
+          tag: "v.1.1"     
 workflows:
   version: 2
-  build_and_test:
+  test_build_deploy:
     jobs:
-      - build
-      - test:
+      - test
+      - Build-Push-Image-Docker:
           requires:
-            - build    
+            - test    
