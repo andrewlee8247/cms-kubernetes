@@ -128,10 +128,12 @@ jobs:
   # Load test deployment
   load-test:
     description: Run load test.
-    machine: true
+    docker:
+      - image: python:3.7.3-stretch
     working_directory: ~/cms-kubernetes
     steps:
       - checkout
+
       # Download and cache dependencies
       - restore_cache:
           keys:
