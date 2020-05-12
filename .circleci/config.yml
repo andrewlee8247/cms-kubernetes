@@ -126,7 +126,7 @@ jobs:
           tag: v.1.1 # Change version number when updating
 
   # Load test deployment
-  load-test:
+  test-load:
     description: Run load test.
     machine: true
     working_directory: ~cms-kubernetes
