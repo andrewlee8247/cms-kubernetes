@@ -1,15 +1,10 @@
 import sys
-sys.path.append('./')
-from app.frontend.app import server
+
+sys.path.append("./app")
+from frontend.app import server
 
 
-print('\n ========================= front-end test session start =========================')
-try:
+def test_frontend():
     with server.test_client() as c:
-        response = c.get('/')
+        response = c.get("/")
         assert response.status_code == 200
-    print('\n Response Successful')
-    print('\n ============================ front-end test passed =============================')
-except Exception as e:
-    print('\n Response Error {}'.format(str(e)))
-    print('\n ============================ front-end test failed =============================')
