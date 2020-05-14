@@ -44,8 +44,6 @@ jobs:
             . venv/bin/activate
             export GOOGLE_APPLICATION_CREDENTIALS='./GCLOUD_SERVICE_KEY.json'
             make test
-            python3 tests/test_api.py
-            python3 tests/test_frontend.py
       # Run lints
       - run:
           name: Run Lint
