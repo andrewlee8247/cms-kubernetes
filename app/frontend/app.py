@@ -3,19 +3,19 @@ import dash_core_components as dcc
 import dash_html_components as html
 from flask import Flask
 from flask import redirect, render_template
+from flask.logging import create_logger
 from dash.dependencies import Input, Output, State
 import requests
 import logging
 
-
 server = Flask(__name__)
-
+LOG = create_logger(server)
+LOG.setLevel(logging.INFO)
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
     server=server, external_stylesheets=external_stylesheets, routes_pathname_prefix="/"
 )
-
 
 app.title = "Healthcare App"
 app.layout = html.Div(
@@ -351,7 +351,7 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
                 return dict_response["error"]
 
         except Exception as e:
-            logging.error(e)
+            LOG.error(e)
             return str(e)
 
 

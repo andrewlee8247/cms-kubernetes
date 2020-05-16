@@ -3,9 +3,13 @@ from flask import jsonify
 from flask import request
 from flasgger import Swagger
 from flasgger import swag_from
+import google.cloud.logging
 import logging
 from lib import prediction
 
+client = google.cloud.logging.Client()
+client.get_default_handler()
+client.setup_logging()
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
