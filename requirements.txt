@@ -10,6 +10,7 @@ flask
 requests
 google-cloud-storage
 google-cloud-bigquery
+google-cloud-logging
 bs4
 flasgger
 google-api-python-client
