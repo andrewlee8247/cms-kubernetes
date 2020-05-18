@@ -16,5 +16,6 @@ flasgger
 google-api-python-client
 locust
 pyarrow
-dash==1.11.0
+dash
+dash-bootstrap-components
 black

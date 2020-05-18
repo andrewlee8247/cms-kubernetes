@@ -1,193 +1,434 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from flask import Flask
 from flask import redirect, render_template
 from flask.logging import create_logger
 from dash.dependencies import Input, Output, State
 import requests
 import logging
+import time
 
 server = Flask(__name__)
 LOG = create_logger(server)
 LOG.setLevel(logging.INFO)
 
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
-    server=server, external_stylesheets=external_stylesheets, routes_pathname_prefix="/"
+    server=server,
+    external_stylesheets=[dbc.themes.LUX],
+    routes_pathname_prefix="/",
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 
-app.title = "Healthcare App"
+centered = {
+    "width": "100%",
+    "display": "flex",
+    "align-items": "center",
+    "justify-content": "center",
+}
+
+navbar = dbc.Navbar(
+    [
+        html.A(
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.NavbarBrand(
+                            "Healthcare Predictions Application", className="ml-2"
+                        )
+                    ),
+                ],
+                align="center",
+                no_gutters=True,
+            ),
+            href="/",
+        ),
+    ],
+    color="dark",
+    dark=True,
+)
+
+jumbotron = dbc.Jumbotron(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Container(
+                        [
+                            html.H1("Healthcare Predictions", className="display-5"),
+                            html.P(
+                                "An application to predict the "
+                                "annual responsibility cost for Medicare/Medicaid patients "
+                                "based on medical condition.",
+                                className="lead",
+                            ),
+                            html.Hr(className="my-2"),
+                            html.P(
+                                "Data taken from the Center for Medicare "
+                                "and Medicaid Services."
+                            ),
+                            html.A(
+                                html.P(
+                                    dbc.Button("Learn more", color="primary"),
+                                    className="lead",
+                                ),
+                                href="https://www.cms.gov",
+                                target="_blank",
+                            ),
+                        ],
+                        fluid=True,
+                    ),
+                    width={"size": 8, "offset": 2},
+                )
+            ],
+        )
+    ],
+    fluid=True,
+)
+
+form = dbc.Container(
+    [
+        dbc.Row(
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        [
+                            html.H5("Input Information", className="card-title"),
+                            html.Br(),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Age:", html_for="age"),
+                                                dbc.Input(
+                                                    type="integer",
+                                                    id="age",
+                                                    placeholder="Enter Age",
+                                                ),
+                                                dbc.FormFeedback(valid=True),
+                                                dbc.FormFeedback(
+                                                    "Age must be a number", valid=False,
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 1},
+                                    ),
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Gender:", html_for="gender"),
+                                                dcc.Dropdown(
+                                                    id="gender",
+                                                    options=[
+                                                        {
+                                                            "label": "Male",
+                                                            "value": "1",
+                                                        },
+                                                        {
+                                                            "label": "Female",
+                                                            "value": "2",
+                                                        },
+                                                    ],
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 2, "offset": 1},
+                                    ),
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("Race:", html_for="race"),
+                                                dcc.Dropdown(
+                                                    id="race",
+                                                    options=[
+                                                        {
+                                                            "label": "White",
+                                                            "value": "1",
+                                                        },
+                                                        {
+                                                            "label": "Black",
+                                                            "value": "2",
+                                                        },
+                                                        {
+                                                            "label": "Hispanic",
+                                                            "value": "5",
+                                                        },
+                                                        {
+                                                            "label": "Other",
+                                                            "value": "3",
+                                                        },
+                                                    ],
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 3, "offset": 1},
+                                    ),
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label("State:", html_for="state"),
+                                                dbc.Input(
+                                                    type="text",
+                                                    id="state",
+                                                    placeholder="Enter state",
+                                                ),
+                                                dbc.FormText(
+                                                    "State must be abbreviated"
+                                                ),
+                                                dbc.FormFeedback(valid=True),
+                                                dbc.FormFeedback(
+                                                    "State must be abbreviated (example: CA)",
+                                                    valid=False,
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 4, "offset": 1},
+                                    ),
+                                ],
+                                align="start",
+                                justify="center",
+                            ),
+                            html.Br(),
+                            html.Br(),
+                            html.Br(),
+                            dbc.Row(
+                                dbc.Col(
+                                    dbc.FormGroup(
+                                        [
+                                            dbc.Label(
+                                                "Medical Conditions (Select All that Apply):",
+                                                html_for="conditions",
+                                            ),
+                                            dcc.Dropdown(
+                                                id="conditions",
+                                                options=[
+                                                    {
+                                                        "label": "Alzheimers",
+                                                        "value": "alz",
+                                                    },
+                                                    {
+                                                        "label": "Heart Failure",
+                                                        "value": "hf",
+                                                    },
+                                                    {
+                                                        "label": "Kidney Disease",
+                                                        "value": "kd",
+                                                    },
+                                                    {"label": "Cancer", "value": "cr"},
+                                                    {"label": "COPD", "value": "copd"},
+                                                    {
+                                                        "label": "Depression",
+                                                        "value": "depr",
+                                                    },
+                                                    {
+                                                        "label": "Diabetes",
+                                                        "value": "dia",
+                                                    },
+                                                    {
+                                                        "label": "Heart Disease",
+                                                        "value": "hd",
+                                                    },
+                                                    {
+                                                        "label": "Osteoporosis",
+                                                        "value": "ost",
+                                                    },
+                                                    {
+                                                        "label": "Arthritis",
+                                                        "value": "art",
+                                                    },
+                                                    {"label": "Stroke", "value": "stk"},
+                                                ],
+                                                multi=True,
+                                            ),
+                                        ],
+                                    ),
+                                    md={"size": 5},
+                                ),
+                                align="center",
+                                justify="center",
+                            ),
+                            html.Br(),
+                            html.Br(),
+                            html.Br(),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label(
+                                                    "Diagnosis Claims Per Year:",
+                                                    html_for="dx",
+                                                ),
+                                                dbc.Input(
+                                                    type="integer",
+                                                    id="dx",
+                                                    placeholder="Enter Claims",
+                                                ),
+                                                dbc.FormFeedback(valid=True),
+                                                dbc.FormFeedback(
+                                                    "Diagnosis claims must be a number",
+                                                    valid=False,
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 1},
+                                    ),
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label(
+                                                    "Number of Procedures Per Year:",
+                                                    html_for="px",
+                                                ),
+                                                dbc.Input(
+                                                    type="integer",
+                                                    id="px",
+                                                    placeholder="Enter Procedures",
+                                                ),
+                                                dbc.FormFeedback(valid=True),
+                                                dbc.FormFeedback(
+                                                    "Number of procedures must be a number",
+                                                    valid=False,
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 2, "offset": 1},
+                                    ),
+                                    dbc.Col(
+                                        dbc.FormGroup(
+                                            [
+                                                dbc.Label(
+                                                    "Claims Outside of Primary Insurance:",
+                                                    html_for="hcpcs",
+                                                ),
+                                                dbc.Input(
+                                                    type="integer",
+                                                    id="hcpcs",
+                                                    placeholder="Enter Claims",
+                                                ),
+                                                dbc.FormFeedback(valid=True),
+                                                dbc.FormFeedback(
+                                                    "Claims must be a number",
+                                                    valid=False,
+                                                ),
+                                            ]
+                                        ),
+                                        md={"size": 2, "order": 3, "offset": 1},
+                                    ),
+                                ],
+                                align="end",
+                                justify="center",
+                            ),
+                            html.Br(),
+                            html.Br(),
+                            html.Br(),
+                            dbc.Row(
+                                dbc.Col(
+                                    html.Div(
+                                        [
+                                            dbc.Button(
+                                                "Submit",
+                                                color="primary",
+                                                block=True,
+                                                id="submit_val",
+                                            ),
+                                            dbc.Spinner(html.Div(id="loading")),
+                                        ]
+                                    ),
+                                    md={"size": 3},
+                                ),
+                                justify="center",
+                            ),
+                            html.Br(),
+                            html.Br(),
+                            dbc.Alert(
+                                [html.H4(id="output", style={"textAlign": "center"})],
+                                color="dark",
+                                is_open=False,
+                                id="prediction_alert",
+                                style={
+                                    "display": "flex",
+                                    "height": "100px",
+                                    "align-items": "center",
+                                    "justify-content": "center",
+                                },
+                            ),
+                        ]
+                    ),
+                ),
+            )
+        )
+    ]
+)
+
+app.title = "Healthcare Predictions"
 app.layout = html.Div(
     [
         dcc.Location(id="url", refresh=False),
         html.Div(
             id="page-content",
             children=[
-                html.H1(
-                    children="Predict Healthcare Cost", style={"textAlign": "center"}
-                ),
-                html.H3(
-                    children="Application to Predict Annual Responsibility for Medicare Patients",
-                    style={"textAlign": "center"},
-                ),
-                html.Br(),
-                html.Br(),
-                html.Div(
-                    [
-                        html.Div(
-                            [
-                                html.Label("Age:"),
-                                dcc.Input(id="age", style={"width": "50px"}),
-                            ],
-                            className="two columns",
-                        ),
-                        html.Div(
-                            [
-                                html.Label("Gender:"),
-                                dcc.Dropdown(
-                                    id="gender",
-                                    options=[
-                                        {"label": "Male", "value": "1"},
-                                        {"label": "Female", "value": "2"},
-                                    ],
-                                    style={"width": "100px"},
-                                ),
-                            ],
-                            className="two columns",
-                        ),
-                        html.Div(
-                            [
-                                html.Label("Race:"),
-                                dcc.Dropdown(
-                                    id="race",
-                                    options=[
-                                        {"label": "White", "value": "1"},
-                                        {"label": "Black", "value": "2"},
-                                        {"label": "Hispanic", "value": "5"},
-                                        {"label": "Other", "value": "3"},
-                                    ],
-                                    style={"width": "120px"},
-                                ),
-                            ],
-                            className="two columns",
-                        ),
-                        html.Div(
-                            [
-                                html.Label("State(Abbr.):"),
-                                dcc.Input(
-                                    id="state", type="text", style={"width": "50px"}
-                                ),
-                            ],
-                            className="two columns",
-                        ),
-                    ],
-                    className="row",
-                    style={
-                        "width": "100%",
-                        "display": "flex",
-                        "align-items": "center",
-                        "justify-content": "center",
-                    },
-                ),
+                html.Div(navbar),
+                html.Div(jumbotron),
+                html.Div(form),
                 html.Br(),
                 html.Br(),
                 html.Br(),
-                html.Div(
-                    html.Div(
-                        [
-                            html.Label("Medical Conditions (Select All that Apply):"),
-                            dcc.Dropdown(
-                                id="conditions",
-                                options=[
-                                    {"label": "Alzheimers", "value": "alz"},
-                                    {"label": "Heart Failure", "value": "hf"},
-                                    {"label": "Kidney Disease", "value": "kd"},
-                                    {"label": "Cancer", "value": "cr"},
-                                    {"label": "COPD", "value": "copd"},
-                                    {"label": "Depression", "value": "depr"},
-                                    {"label": "Diabetes", "value": "dia"},
-                                    {"label": "Heart Disease", "value": "hd"},
-                                    {"label": "Osteoporosis", "value": "ost"},
-                                    {"label": "Arthritis", "value": "art"},
-                                    {"label": "Stroke", "value": "stk"},
-                                ],
-                                multi=True,
-                            ),
-                        ],
-                        style={"width": "30%"},
-                    ),
-                    style={
-                        "width": "100%",
-                        "display": "flex",
-                        "align-items": "center",
-                        "justify-content": "center",
-                    },
-                ),
                 html.Br(),
                 html.Br(),
                 html.Br(),
-                html.Div(
-                    [
-                        html.Div(
-                            [
-                                html.Label(
-                                    children="Diagnosis Claims Per Year:",
-                                    style={"width": "70%"},
-                                ),
-                                dcc.Input(id="dx", style={"width": "50px"}),
-                            ],
-                            className="two columns",
-                        ),
-                        html.Div(
-                            [
-                                html.Label(
-                                    "Procedures Per Year:", style={"width": "50%"}
-                                ),
-                                dcc.Input(id="px", style={"width": "50px"}),
-                            ],
-                            className="two columns",
-                        ),
-                        html.Div(
-                            [
-                                html.Label(
-                                    "Claims Outside of Primary Insurance:",
-                                    style={"width": "70%"},
-                                ),
-                                dcc.Input(id="hcpcs", style={"width": "50px"}),
-                            ],
-                            className="two columns",
-                        ),
-                    ],
-                    className="row",
-                    style={
-                        "width": "100%",
-                        "display": "flex",
-                        "align-items": "center",
-                        "justify-content": "center",
-                    },
-                ),
-                html.Br(),
-                html.Br(),
-                html.Br(),
-                html.Div(
-                    html.Button("Submit", id="submit-val", style={"width": "25%"}),
-                    style={
-                        "width": "100%",
-                        "display": "flex",
-                        "align-items": "center",
-                        "justify-content": "center",
-                    },
-                ),
-                html.Br(),
-                html.Br(),
-                html.Br(),
-                html.H3(id="output", style={"textAlign": "center"}),
             ],
-            style={"overflow": "hidden"},
         ),
     ]
 )
+
+
+@app.callback(
+    [Output("age", "valid"), Output("age", "invalid")], [Input("age", "value")]
+)
+def check_age(age):
+    if age:
+        is_number = age.isnumeric()
+        return is_number, not is_number
+    return False, False
+
+
+@app.callback(
+    [Output("state", "valid"), Output("state", "invalid")], [Input("state", "value")]
+)
+def check_state(state):
+    if state:
+        is_abbr = len(state) == 2
+        return is_abbr, not is_abbr
+    return False, False
+
+
+@app.callback([Output("dx", "valid"), Output("dx", "invalid")], [Input("dx", "value")])
+def check_dx(dx):
+    if dx:
+        is_number = dx.isnumeric()
+        return is_number, not is_number
+    return False, False
+
+
+@app.callback([Output("px", "valid"), Output("px", "invalid")], [Input("px", "value")])
+def check_px(px):
+    if px:
+        is_number = px.isnumeric()
+        return is_number, not is_number
+    return False, False
+
+
+@app.callback(
+    [Output("hcpcs", "valid"), Output("hcpcs", "invalid")], [Input("hcpcs", "value")]
+)
+def check_hcpcs(hcpcs):
+    if hcpcs:
+        is_number = hcpcs.isnumeric()
+        return is_number, not is_number
+    return False, False
 
 
 @server.route("/api")
@@ -210,8 +451,32 @@ def display_page(pathname):
 
 
 @app.callback(
+    Output("loading", "children"),
+    [Input("submit_val", "n_clicks")],
+    [State("output", "children")],
+)
+def toggle_loading(n_clicks, output):
+    if n_clicks is None:
+        pass
+    else:
+        time.sleep(3)
+    return
+
+
+@app.callback(
+    Output("prediction_alert", "is_open"),
+    [Input("output", "children")],
+    [State("output", "is_open")],
+)
+def toggle_prediction(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
+@app.callback(
     Output("output", "children"),
-    [Input("submit-val", "n_clicks")],
+    [Input("submit_val", "n_clicks")],
     state=[
         State("age", "value"),
         State("gender", "value"),
@@ -306,15 +571,26 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
             if dx is None:
                 dx = 0
             else:
-                dx = int(dx)
+                try:
+                    dx = int(dx)
+                except Exception as e:
+                    raise Exception("Diagnosis claims must be a number")
             if px is None:
                 px = 0
             else:
-                px = int(px)
+                try:
+                    px = int(px)
+                except Exception as e:
+                    raise Exception("Number of procedures must be a number")
             if hcpcs is None:
                 hcpcs = 0
             else:
-                hcpcs = int(hcpcs)
+                try:
+                    hcpcs = int(hcpcs)
+                except Exception as e:
+                    raise Exception(
+                        "Claims outside of primary insurance must be a number"
+                    )
 
             payload = {
                 "age": age,
@@ -358,4 +634,4 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
 if __name__ == "__main__":
     from waitress import serve
 
-    serve(server, host="0.0.0.0", port="80")
+    serve(server, host="0.0.0.0", port="8080")
