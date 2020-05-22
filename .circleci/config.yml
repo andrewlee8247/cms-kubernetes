@@ -66,10 +66,10 @@ jobs:
       - gcr/build-image:
           image: healthcare-predictions-api
           path: ~/cms-kubernetes/app/api
-          tag: "v.1.2" # Change version number when updating 
+          tag: "v.1.3" # Change version number when updating 
       - gcr/push-image:
           image: healthcare-predictions-api
-          tag: "v.1.2" # Change version number when updating
+          tag: "v.1.3" # Change version number when updating
   Build-Push-Image-Docker-Frontend:
     description: Build and push front-end image to GCR
     machine: true
@@ -80,10 +80,10 @@ jobs:
       - gcr/build-image:
           image: healthcare-predictions-app
           path: ~/cms-kubernetes/app/frontend
-          tag: "v.1.2" # Change version number when updating 
+          tag: "v.1.3" # Change version number when updating 
       - gcr/push-image:
           image: healthcare-predictions-app
-          tag: "v.1.2" # Change version number when updating
+          tag: "v.1.3" # Change version number when updating
 
   # Deploy containers to GKE
   deploy:
@@ -107,7 +107,7 @@ jobs:
           deployment: healthcare-api
           image: gcr.io/healthcare-predictions/healthcare-predictions-api
           namespace: healthcare-app
-          tag: v.1.2 # Change version number when updating 
+          tag: v.1.3 # Change version number when updating 
       - run:
           name: Update Front-end Deployment
           command: |
@@ -118,7 +118,7 @@ jobs:
           deployment: healthcare-frontend
           image: gcr.io/healthcare-predictions/healthcare-predictions-app
           namespace: healthcare-app
-          tag: v.1.2 # Change version number when updating
+          tag: v.1.3 # Change version number when updating
 
   # Load test deployment
   load-test:

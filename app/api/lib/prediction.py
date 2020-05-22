@@ -76,7 +76,7 @@ def predict(
         results = query_job.result()
         job_id = query_job.job_id
         if query_job.state == "DONE":
-            cloud_logger.info(
+            logging.info(
                 "Prediction Job ID: {0} is {1}".format(job_id, query_job.state)
             )
         else:

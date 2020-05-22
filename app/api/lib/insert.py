@@ -114,7 +114,7 @@ def insert_data(
     query_job.result()
     job_id = query_job.job_id
     if query_job.state == "DONE":
-        cloud_logger.info("Insert Job ID: {0}  is {1}".format(job_id, query_job.state))
+        logging.info("Insert Job ID: {0}  is {1}".format(job_id, query_job.state))
     else:
         raise Exception("Insert Job ID: {0} error {1}".format(job_id, query_job.errors))
 

@@ -638,7 +638,7 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
                 return dict_response["error"]
 
         except Exception as e:
-            cloud_logger.error(e)
+            logging.error(e)
             return "Error: {}".format(str(e))
 
 
