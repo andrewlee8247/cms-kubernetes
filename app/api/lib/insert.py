@@ -3,6 +3,9 @@ import uuid
 import logging
 from lib import convert
 
+cloud_logger = logging.getLogger("cloudLogger")
+cloud_logger.setLevel(logging.INFO)
+
 
 def insert_data(
     age,
@@ -111,7 +114,7 @@ def insert_data(
     query_job.result()
     job_id = query_job.job_id
     if query_job.state == "DONE":
-        logging.info("Insert Job ID: {0}  is {1}".format(job_id, query_job.state))
+        cloud_logger.info("Insert Job ID: {0}  is {1}".format(job_id, query_job.state))
     else:
         raise Exception("Insert Job ID: {0} error {1}".format(job_id, query_job.errors))
 

@@ -90,13 +90,13 @@ def get_prediction():
         if list(response.keys())[0] == "error":
             cloud_logger.error(response)
         else:
-            logging.info(
+            cloud_logger.info(
                 {"JSON payload": req_data, "prediction": response["prediction"]}
             )
         return jsonify(response)
 
     except Exception as e:
-        logging.error({"error": "Missing {}".format(e)})
+        cloud_logger.error({"error": "Missing {}".format(e)})
         error = {"error": "Missing {}".format(e)}
         return error
 

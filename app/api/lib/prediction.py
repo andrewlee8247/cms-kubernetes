@@ -2,6 +2,9 @@ from google.cloud import bigquery
 import logging
 from lib import insert
 
+cloud_logger = logging.getLogger("cloudLogger")
+cloud_logger.setLevel(logging.INFO)
+
 
 def predict(
     age,
@@ -73,7 +76,7 @@ def predict(
         results = query_job.result()
         job_id = query_job.job_id
         if query_job.state == "DONE":
-            logging.info(
+            cloud_logger.info(
                 "Prediction Job ID: {0} is {1}".format(job_id, query_job.state)
             )
         else:
