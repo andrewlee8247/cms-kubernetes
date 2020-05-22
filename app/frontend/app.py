@@ -21,21 +21,17 @@ app = dash.Dash(
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 
-centered = {
-    "width": "100%",
-    "display": "flex",
-    "align-items": "center",
-    "justify-content": "center",
-}
-
 navbar = dbc.Navbar(
     [
         html.A(
             dbc.Row(
                 [
                     dbc.Col(
-                        dbc.NavbarBrand(
-                            "Healthcare Predictions Application", className="ml-2"
+                        dbc.Container(
+                            dbc.NavbarBrand(
+                                "Healthcare Predictions Application",
+                                className="navbar-nav mx-auto",
+                            )
                         )
                     ),
                 ],
@@ -53,8 +49,8 @@ jumbotron = dbc.Jumbotron(
     [
         dbc.Row(
             [
-                dbc.Col(
-                    dbc.Container(
+                dbc.Container(
+                    dbc.Col(
                         [
                             html.H1("Healthcare Predictions", className="display-5"),
                             html.P(
@@ -76,12 +72,10 @@ jumbotron = dbc.Jumbotron(
                                 href="https://www.cms.gov",
                                 target="_blank",
                             ),
-                        ],
-                        fluid=True,
+                        ]
                     ),
-                    width={"size": 8, "offset": 2},
                 )
-            ],
+            ]
         )
     ],
     fluid=True,
@@ -380,6 +374,7 @@ app.layout = html.Div(
                 html.Br(),
                 html.Br(),
             ],
+            style={"overflow": "hidden"},
         ),
     ]
 )
