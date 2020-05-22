@@ -453,13 +453,37 @@ def display_page(pathname):
 @app.callback(
     Output("loading", "children"),
     [Input("submit_val", "n_clicks")],
-    [State("output", "children")],
+    state=[
+        State("age", "valid"),
+        State("gender", "value"),
+        State("dx", "value"),
+        State("px", "value"),
+        State("hcpcs", "value"),
+    ],
 )
-def toggle_loading(n_clicks, output):
-    if n_clicks is None:
-        pass
-    else:
-        time.sleep(3)
+def toggle_loading(n_clicks, age, gender, dx, px, hcpcs):
+    if n_clicks:
+        if age is False:
+            pass
+        elif gender is None:
+            pass
+        elif dx not in (None, ""):
+            try:
+                int(dx)
+            except Exception as e:
+                pass
+        elif px not in (None, ""):
+            try:
+                int(px)
+            except Exception as e:
+                pass
+        elif hcpcs not in (None, ""):
+            try:
+                int(hcpcs)
+            except Exception as e:
+                pass
+        else:
+            time.sleep(3)
     return
 
 
@@ -568,21 +592,21 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
                     stroke = 1
                 else:
                     stroke = 2
-            if dx is None:
+            if dx in (None, ""):
                 dx = 0
             else:
                 try:
                     dx = int(dx)
                 except Exception as e:
                     raise Exception("Diagnosis claims must be a number")
-            if px is None:
+            if px in (None, ""):
                 px = 0
             else:
                 try:
                     px = int(px)
                 except Exception as e:
                     raise Exception("Number of procedures must be a number")
-            if hcpcs is None:
+            if hcpcs in (None, ""):
                 hcpcs = 0
             else:
                 try:
@@ -628,10 +652,10 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
 
         except Exception as e:
             LOG.error(e)
-            return str(e)
+            return "Error: {}".format(str(e))
 
 
 if __name__ == "__main__":
     from waitress import serve
 
-    serve(server, host="0.0.0.0", port="8080")
+    serve(server, host="0.0.0.0", port="80")
