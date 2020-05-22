@@ -3,13 +3,15 @@ from flask import jsonify
 from flask import request
 from flasgger import Swagger
 from flasgger import swag_from
-import google.cloud.logging
+from google.cloud import logging as cloudlogging
 import logging
 from lib import prediction
 
-client = google.cloud.logging.Client()
-client.get_default_handler()
-client.setup_logging()
+log_client = cloudlogging.Client()
+log_handler = log_client.get_default_handler()
+cloud_logger = logging.getLogger("cloudLogger")
+cloud_logger.setLevel(logging.INFO)
+cloud_logger.addHandler(log_handler)
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
@@ -86,15 +88,15 @@ def get_prediction():
             hcpcs,
         )
         if list(response.keys())[0] == "error":
-            logging.error(response)
+            cloud_logger.error(response)
         else:
-            logging.info(
+            cloud_logger.info(
                 {"JSON payload": req_data, "prediction": response["prediction"]}
             )
         return jsonify(response)
 
     except Exception as e:
-        logging.error({"error": "Missing {}".format(e)})
+        cloud_logger.error({"error": "Missing {}".format(e)})
         error = {"error": "Missing {}".format(e)}
         return error
 

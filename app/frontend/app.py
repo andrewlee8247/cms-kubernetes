@@ -6,15 +6,17 @@ from flask import Flask
 from flask import redirect, render_template
 from dash.dependencies import Input, Output, State
 import requests
-import google.cloud.logging
+from google.cloud import logging as cloudlogging
 import logging
 import time
 
 server = Flask(__name__)
 
-client = google.cloud.logging.Client()
-client.get_default_handler()
-client.setup_logging()
+log_client = cloudlogging.Client()
+log_handler = log_client.get_default_handler()
+cloud_logger = logging.getLogger("cloudLogger")
+cloud_logger.setLevel(logging.INFO)
+cloud_logger.addHandler(log_handler)
 
 app = dash.Dash(
     server=server,
@@ -23,27 +25,15 @@ app = dash.Dash(
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 
-navbar = dbc.Navbar(
-    [
-        html.A(
-            dbc.Row(
-                [
-                    dbc.Col(
-                        dbc.Container(
-                            dbc.NavbarBrand(
-                                "Healthcare Predictions Application",
-                                className="navbar-nav mx-auto",
-                            )
-                        )
-                    ),
-                ],
-                align="center",
-                no_gutters=True,
-            ),
-            href="/",
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(
+            dbc.NavLink("API Docs", href="http://34.102.187.98/api/", target="_blank")
         ),
     ],
-    color="dark",
+    brand="Healthcare Predictions",
+    brand_href="http://34.102.187.98",
+    color="primary",
     dark=True,
 )
 
@@ -346,7 +336,7 @@ form = dbc.Container(
                                 id="prediction_alert",
                                 style={
                                     "display": "flex",
-                                    "height": "100px",
+                                    "height": "120px",
                                     "align-items": "center",
                                     "justify-content": "center",
                                 },
@@ -648,7 +638,7 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
                 return dict_response["error"]
 
         except Exception as e:
-            logging.error(e)
+            cloud_logger.error(e)
             return "Error: {}".format(str(e))
 
 
