@@ -2,9 +2,6 @@ from google.cloud import bigquery
 import logging
 from lib import insert
 
-cloud_logger = logging.getLogger("cloudLogger")
-cloud_logger.setLevel(logging.INFO)
-
 
 def predict(
     age,

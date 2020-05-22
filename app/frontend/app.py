@@ -10,14 +10,13 @@ from google.cloud import logging as cloudlogging
 import logging
 import time
 
-server = Flask(__name__)
-
 log_client = cloudlogging.Client()
 log_handler = log_client.get_default_handler()
 cloud_logger = logging.getLogger("cloudLogger")
 cloud_logger.setLevel(logging.INFO)
 cloud_logger.addHandler(log_handler)
 
+server = Flask(__name__)
 app = dash.Dash(
     server=server,
     external_stylesheets=[dbc.themes.LUX],

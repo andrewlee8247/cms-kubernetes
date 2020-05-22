@@ -3,9 +3,6 @@ import uuid
 import logging
 from lib import convert
 
-cloud_logger = logging.getLogger("cloudLogger")
-cloud_logger.setLevel(logging.INFO)
-
 
 def insert_data(
     age,
