@@ -4,15 +4,17 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from flask import Flask
 from flask import redirect, render_template
-from flask.logging import create_logger
 from dash.dependencies import Input, Output, State
 import requests
+import google.cloud.logging
 import logging
 import time
 
 server = Flask(__name__)
-LOG = create_logger(server)
-LOG.setLevel(logging.INFO)
+
+client = google.cloud.logging.Client()
+client.get_default_handler()
+client.setup_logging()
 
 app = dash.Dash(
     server=server,
@@ -646,7 +648,7 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
                 return dict_response["error"]
 
         except Exception as e:
-            LOG.error(e)
+            logging.error(e)
             return "Error: {}".format(str(e))
 
 
