@@ -87,6 +87,7 @@ jobs:
       - run: 
           name: Copy Secrets File to Front-end Directory
           command: |
+            mkdir ~/cms-kubernetes/app/frontend/lib/
             echo "def access_token():" >> ~/cms-kubernetes/app/frontend/lib/secrets.py
             echo "    token=" $ACCESS_TOKEN >> ~/cms-kubernetes/app/frontend/lib/secrets.py
             echo "    return token" >> ~/cms-kubernetes/app/frontend/lib/secrets.py
@@ -174,7 +175,6 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - development
       - build_push_image_docker_api:
           requires:
