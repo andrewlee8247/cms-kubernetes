@@ -1,5 +1,5 @@
 # Kubernetes Project Using GKE - Medicare Cost Predictions
-[![CircleCI](https://circleci.com/gh/andrewlee8247/cms-kubernetes.svg?style=svg)](https://circleci.com/gh/andrewlee8247/cms-kubernetes)
+[![CircleCI](https://circleci.com/gh/andrewlee8247/cms-kubernetes.svg?style=svg)](https://circleci.com/gh/andrewlee8247/cms-kubernetes/tree/development)
 
 This is a Kubernetes project that deploys an application through a microservices structure using a Docker container registry. Deployment, scaling, and operations are automated through a CI/CD pipeline. Application is deployed to a managed Kubernetes cluster on Google's Kubernetes Engine (GKE). The project's goal was to build a minimum viable product (MVP) for an application that provides predictions on annual healthcare responsibility costs for patients on Medicare based on their chronic medical condition(s). The MVP can be expanded to build a fully featured application to help patients, healthcare providers, and insurers outside of Medicare estimate annual costs.
 
