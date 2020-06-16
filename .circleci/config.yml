@@ -93,7 +93,7 @@ jobs:
             echo "    return token" >> ~/cms-kubernetes/app/frontend/lib/secrets.py
       - gcr/gcr-auth
       - gcr/build-image:
-          image: healthcare-predictions-app
+          image: healthcare-predictions-frontend
           path: ~/cms-kubernetes/app/frontend
           tag: "v.1.2" # Change version number when updating 
       - gcr/push-image:
