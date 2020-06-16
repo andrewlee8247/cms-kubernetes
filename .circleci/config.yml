@@ -159,6 +159,13 @@ jobs:
           paths:
             - ./venv
           key: v4-dependencies-{{ checksum "requirements.txt" }}
+      # Secrets file
+      - run: 
+          name: Copy Secrets File to API Directory
+          command: |
+            echo "def access_token():" >> ~/cms-kubernetes/app/api/lib/secrets.py
+            echo "    token=" $ACCESS_TOKEN >> ~/cms-kubernetes/app/api/lib/secrets.py
+            echo "    return token" >> ~/cms-kubernetes/app/api/lib/secrets.py
       # Run load test
       - run:
           name: Run Load Test
