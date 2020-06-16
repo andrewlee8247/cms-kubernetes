@@ -2,34 +2,35 @@ from google.cloud import bigquery
 import logging
 from lib import insert
 
-cloud_logger = logging.getLogger("cloudLogger")
-cloud_logger.setLevel(logging.INFO)
+project = "healthcare-predictions"
+dataset = "cms"
+table = "prediction_requests"
+model = "model_v1"
 
 
 def predict(
     age,
     gender,
-    race,
-    state,
-    alzheimers,
-    heart_failure,
-    kidney_disease,
-    cancer,
-    copd,
-    depression,
-    diabetes,
-    heart_disease,
-    osteoporosis,
-    arthritis,
-    stroke,
-    dx,
-    px,
-    hcpcs,
+    race=None,
+    state=None,
+    alzheimers=None,
+    heart_failure=None,
+    kidney_disease=None,
+    cancer=None,
+    copd=None,
+    depression=None,
+    diabetes=None,
+    heart_disease=None,
+    osteoporosis=None,
+    arthritis=None,
+    stroke=None,
+    dx=None,
+    px=None,
+    hcpcs=None,
 ):
 
     # Connect to database
-    database = "healthcare-predictions"
-    client = bigquery.Client(database)
+    client = bigquery.Client(project=project)
 
     try:
         # Input data to table
@@ -55,20 +56,18 @@ def predict(
         )
 
         # Prediction query
-        query = (
-            """
+        query = """
         SELECT *
         FROM
-            ML.PREDICT(MODEL `cms.model_v1`,
+            ML.PREDICT(MODEL `{0}.{1}`,
                 (
                 SELECT *
                 FROM
-                    `cms.prediction_requests`
-                WHERE ID = """
-            "'" + request_id + "'"
-            """
+                    `{0}.{2}`
+                WHERE ID = "{3}"
                 )
-            )"""
+            )""".format(
+            dataset, model, table, request_id
         )
 
         # Run query
@@ -76,7 +75,7 @@ def predict(
         results = query_job.result()
         job_id = query_job.job_id
         if query_job.state == "DONE":
-            cloud_logger.info(
+            logging.info(
                 "Prediction Job ID: {0} is {1}".format(job_id, query_job.state)
             )
         else:
@@ -90,5 +89,5 @@ def predict(
         return prediction
 
     except Exception as e:
-        error = {"error": str(e)}
-        return error
+        raise Exception(e)
+        return

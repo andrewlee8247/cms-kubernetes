@@ -75,9 +75,9 @@ class converter:
 
     def condition(self, condition):
         # Convert condition if none otherwise raise exception
-        if condition in ("", 0):
+        if condition in ("", None, 0):
             condition = 2
-        elif condition not in ("", 1, 2):
+        elif condition not in (1, 2):
             raise Exception("{} must be 1 or 2".format(self.capitalize()))
         else:
             condition
@@ -85,10 +85,10 @@ class converter:
 
     def claims(self, claims):
         # Convert claims if none otherwise raise exception
-        if claims == "":
+        if claims in ("", None):
             claims = 0
         elif type(claims) is not int:
-            raise Exception("Number of {} must be a number".format(self.upper()))
+            raise Exception("Number of {} must be a number".format(self))
         else:
             claims
         return claims

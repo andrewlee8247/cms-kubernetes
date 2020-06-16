@@ -1,7 +1,5 @@
-pytest
-pylint
-pytest-cov
 flask
+PyJWT
 requests
 google-cloud-storage
 google-cloud-bigquery

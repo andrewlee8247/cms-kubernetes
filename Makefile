@@ -9,6 +9,6 @@ test:
 
 lint:
 	export PYTHONPATH="./app/api" && \
-	pylint --disable=R,C,W0702,W0703,E1101,E0213,W0104,W0642,W1202 app/
+	pylint --disable=R,C,W0702,W0703,E1101,E0213,W0104,W0642,W1202,W0613,W0101 app/
 
 all: install lint test

@@ -4,11 +4,10 @@
 #
 version: 2.1
 orbs:
-  node: circleci/node@1.0.1
   gcp-gke: circleci/gcp-gke@1.0.4
   gcr: circleci/gcp-gcr@0.7.1
 jobs:
-  test:
+  build_test:
     docker:
       - image: google/cloud-sdk
     working_directory: ~/cms-kubernetes
@@ -37,6 +36,13 @@ jobs:
           paths:
             - ./venv
           key: v3-dependencies-{{ checksum "requirements.txt" }}
+      # Secrets file
+      - run: 
+          name: Copy Secrets File to API Directory
+          command: |
+            echo "def access_token():" >> ~/cms-kubernetes/app/api/lib/secrets.py
+            echo "    token=" $ACCESS_TOKEN >> ~/cms-kubernetes/app/api/lib/secrets.py
+            echo "    return token" >> ~/cms-kubernetes/app/api/lib/secrets.py
       # Run tests
       - run:
           name: Run Tests
@@ -52,16 +58,18 @@ jobs:
             make lint
 
   # Build and Push Docker Images to GCR
-  Build-Push-Image-Docker-API:
+  build_push_image_docker_api:
     description: Build and push API image to GCR
     machine: true
     working_directory: ~/cms-kubernetes
     steps:
       - checkout
-      - run:
-          name: Copy Service Key to API Directory
+      - run: 
+          name: Copy Secrets File to API Directory
           command: |
-            echo $GCLOUD_SERVICE_KEY > ~/cms-kubernetes/app/api/healthcare-predictions-85c2b5783a5e.json
+            echo "def access_token():" >> ~/cms-kubernetes/app/api/lib/secrets.py
+            echo "    token=" $ACCESS_TOKEN >> ~/cms-kubernetes/app/api/lib/secrets.py
+            echo "    return token" >> ~/cms-kubernetes/app/api/lib/secrets.py
       - gcr/gcr-auth
       - gcr/build-image:
           image: healthcare-predictions-api
@@ -70,12 +78,18 @@ jobs:
       - gcr/push-image:
           image: healthcare-predictions-api
           tag: "v.1.2" # Change version number when updating
-  Build-Push-Image-Docker-Frontend:
+  build_push_image_docker_frontend:
     description: Build and push front-end image to GCR
     machine: true
     working_directory: ~/cms-kubernetes
     steps:
       - checkout
+      - run: 
+          name: Copy Secrets File to Front-end Directory
+          command: |
+            echo "def access_token():" >> ~/cms-kubernetes/app/frontend/lib/secrets.py
+            echo "    token=" $ACCESS_TOKEN >> ~/cms-kubernetes/app/frontend/lib/secrets.py
+            echo "    return token" >> ~/cms-kubernetes/app/frontend/lib/secrets.py
       - gcr/gcr-auth
       - gcr/build-image:
           image: healthcare-predictions-app
@@ -116,7 +130,7 @@ jobs:
           cluster: healthcare-predictions-dev
           container: healthcare-predictions-frontend
           deployment: healthcare-frontend
-          image: gcr.io/healthcare-predictions/healthcare-predictions-app
+          image: gcr.io/healthcare-predictions/healthcare-predictions-frontend
           namespace: healthcare-app
           tag: v.1.2 # Change version number when updating
 
@@ -150,35 +164,35 @@ jobs:
           command: |
             . venv/bin/activate
             sleep 2m
-            locust --host=http://34.102.187.98 --locustfile locustfile.py --no-web -c 10 -r 1 -t 1m  --print-stats
-
+            locust --host=http://34.71.237.43:30948 --locustfile locustfile.py --headless \
+            -u 5 -r 1 -t 1m  --print-stats
 workflows:
   version: 2
   test_build_deploy:
     jobs:
-      - test:
+      - build_test:
           filters:
             branches:
               only:
                 - master
                 - development
-      - Build-Push-Image-Docker-API:
+      - build_push_image_docker_api:
           requires:
-            - test
+            - build_test
           filters:
             branches:
               only:
                 - development
-      - Build-Push-Image-Docker-Frontend:
+      - build_push_image_docker_frontend:
           requires:
-            - test
+            - build_test
           filters:
             branches:
               only:
                 - development
       - deploy:
           requires:
-            - Build-Push-Image-Docker-API
+            - build_push_image_docker_api
           filters:
             branches:
               only:

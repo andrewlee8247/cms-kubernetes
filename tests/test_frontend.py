@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append("./app")
-from frontend.app import server
+from frontend.web import server
 
 
 def test_frontend():

@@ -1,11 +1,20 @@
-from locust import HttpLocust, TaskSet, task, between
+import sys
+from locust import HttpUser, TaskSet, task, between
 import json
+
+sys.path.append("./app/api")
+from lib import secrets
+
+token = secrets.access_token()
 
 
 class UserBehavior(TaskSet):
     @task(1)
     def create_post(self):
-        headers = {"content-type": "application/json"}
+        headers = {
+            "content-type": "application/json",
+            "x-access-token": token 
+        }
         self.client.post(
             "/api/prediction",
             data=json.dumps(
@@ -34,6 +43,6 @@ class UserBehavior(TaskSet):
         )
 
 
-class WebsiteUser(HttpLocust):
-    task_set = UserBehavior
+class WebsiteUser(HttpUser):
+    tasks = [UserBehavior]
     wait_time = between(5.0, 9.0)

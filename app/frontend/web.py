@@ -1,3 +1,4 @@
+import sys
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -6,15 +7,18 @@ from flask import Flask
 from flask import redirect, render_template
 from dash.dependencies import Input, Output, State
 import requests
-from google.cloud import logging as cloudlogging
 import logging
+from google.cloud.logging.handlers import ContainerEngineHandler
 import time
+from lib import secrets
 
-log_client = cloudlogging.Client()
-log_handler = log_client.get_default_handler()
-cloud_logger = logging.getLogger("cloudLogger")
-cloud_logger.setLevel(logging.INFO)
-cloud_logger.addHandler(log_handler)
+formatter = logging.Formatter("%(message)s")
+handler = ContainerEngineHandler(stream=sys.stderr)
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+root = logging.getLogger()
+root.addHandler(handler)
+root.setLevel(logging.INFO)
 
 server = Flask(__name__)
 app = dash.Dash(
@@ -23,15 +27,18 @@ app = dash.Dash(
     routes_pathname_prefix="/",
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
+url = "http://34.71.237.43:31396"
+api_url = "http://34.71.237.43:30948"
+auth_header = {"x-access-token": secrets.access_token()}
 
 navbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(
-            dbc.NavLink("API Docs", href="http://34.102.187.98/api/", target="_blank")
+            dbc.NavLink("API Docs", href="{}/api/".format(api_url), target="_blank")
         ),
     ],
     brand="Healthcare Predictions",
-    brand_href="http://34.102.187.98",
+    brand_href=url,
     color="primary",
     dark=True,
 )
@@ -453,23 +460,14 @@ def toggle_loading(n_clicks, age, gender, dx, px, hcpcs):
             pass
         elif gender is None:
             pass
-        elif dx not in (None, ""):
-            try:
-                int(dx)
-            except Exception as e:
-                pass
-        elif px not in (None, ""):
-            try:
-                int(px)
-            except Exception as e:
-                pass
-        elif hcpcs not in (None, ""):
-            try:
-                int(hcpcs)
-            except Exception as e:
-                pass
+        elif dx not in (None, "") and dx.isnumeric() is False:
+            pass
+        elif px not in (None, "") and px.isnumeric() is False:
+            pass
+        elif hcpcs not in (None, "") and hcpcs.isnumeric() is False:
+            pass
         else:
-            time.sleep(3)
+            time.sleep(2)
     return
 
 
@@ -508,7 +506,7 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
             else:
                 try:
                     age = int(age)
-                except Exception as e:
+                except ValueError:
                     raise Exception("Age must be a number")
             if gender is None:
                 raise Exception("Gender must be Male or Female")
@@ -583,21 +581,21 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
             else:
                 try:
                     dx = int(dx)
-                except Exception as e:
+                except ValueError:
                     raise Exception("Diagnosis claims must be a number")
             if px in (None, ""):
                 px = 0
             else:
                 try:
                     px = int(px)
-                except Exception as e:
+                except ValueError:
                     raise Exception("Number of procedures must be a number")
             if hcpcs in (None, ""):
                 hcpcs = 0
             else:
                 try:
                     hcpcs = int(hcpcs)
-                except Exception as e:
+                except ValueError:
                     raise Exception(
                         "Claims outside of primary insurance must be a number"
                     )
@@ -624,16 +622,21 @@ def predict(n_clicks, age, gender, race, state, conditions, dx, px, hcpcs):
             }
 
             response = requests.post(
-                "http://34.102.187.98/api/prediction", json=payload, verify=True
+                "{}/api/prediction".format(api_url),
+                json=payload,
+                headers=auth_header,
+                verify=True,
             )
 
             dict_response = dict(response.json())
 
             if list(dict_response.keys())[0] == "prediction":
+                logging.info(response.json())
                 return "Predicted Annual Responsibility Cost: ${}".format(
                     dict_response["prediction"]
                 )
             else:
+                logging.error(response.json())
                 return dict_response["error"]
 
         except Exception as e:

@@ -1,11 +1,9 @@
 pytest
 pylint
-jupyter
 pytest-cov
 pytest-flask
 pandas
 nbval
-click
 flask
 waitress
 requests
@@ -14,9 +12,8 @@ google-cloud-bigquery
 google-cloud-logging
 bs4
 flasgger
-google-api-python-client
+PyJWT
 locust
 pyarrow
 dash
 dash-bootstrap-components
-black

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: healthcare-predictions-frontend
-        image: gcr.io/healthcare-predictions/healthcare-predictions-app:v.1.0
+        image: gcr.io/healthcare-predictions/healthcare-predictions-frontend:v.1.1
         imagePullPolicy: Always
         env:
           - name: "PORT"

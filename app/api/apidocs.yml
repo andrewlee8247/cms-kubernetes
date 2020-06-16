@@ -32,6 +32,11 @@ consumes: application/json
 tags:
     - predictions
 parameters:
+    -   in : header
+        name: x-access-token
+        type: string
+        description: Requires access token
+        required: True
     -   in: body
         name: payload
         schema:
