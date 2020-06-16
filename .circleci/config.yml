@@ -176,14 +176,14 @@ workflows:
             branches:
               only:
                 - development
-      - build_push_image_docker_api:
+      - build_push_image_docker_frontend:
           requires:
             - build_test
           filters:
             branches:
               only:
                 - development
-      - build_push_image_docker_frontend:
+      - build_push_image_docker_api:
           requires:
             - build_test
           filters:
