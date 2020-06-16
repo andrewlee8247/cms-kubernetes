@@ -97,7 +97,7 @@ jobs:
           path: ~/cms-kubernetes/app/frontend
           tag: "v.1.2" # Change version number when updating 
       - gcr/push-image:
-          image: healthcare-predictions-app
+          image: healthcare-predictions-frontend
           tag: "v.1.2" # Change version number when updating
 
   # Deploy containers to GKE
@@ -192,7 +192,7 @@ workflows:
                 - development
       - deploy:
           requires:
-            - build_push_image_docker_api
+            - build_push_image_docker_frontend
           filters:
             branches:
               only:
